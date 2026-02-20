@@ -1,0 +1,26 @@
+- name: kubesmarts/kie-tools -- Synchronize branches and create new release branches
+  include_tasks: ../../common/tasks/synchronize_branches_and_checkout_release_branch.yml
+  vars:
+    repositories: "{{ kie_tool_repositories }}"
+
+- name: kubesmarts/kie-tools -- Update all pom.xml files
+  include_tasks: ../../common/tasks/update_pom_files_with_new_version.yml
+  vars:
+    repositories: "{{ kie_tool_repositories }}"
+
+- name: Update version in package.json files
+  include_tasks: update_package_json_files_with_new_version.yml
+
+- name: Updates Kogito versions and repository references
+  include_tasks: updates_kogito_versions.yml
+
+- name: Update versions in index.js files
+  include_tasks: update_index_js_files_with_new_version.yml
+  vars:
+    repository_location: "{{ cloning_target_dir }}/{{ kie_tool_repositories[0].midstream | basename }}"
+
+- name: Export environment variables and bootstrap each image package that needs to be productized
+  include_tasks: export_env_vars_and_bootstrap_image_packages.yml
+  vars:
+    repository_location: "{{ cloning_target_dir }}/{{ kie_tool_repositories[0].midstream | basename }}"
+

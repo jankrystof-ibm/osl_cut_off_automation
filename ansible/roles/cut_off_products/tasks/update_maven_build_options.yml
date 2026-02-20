@@ -1,0 +1,16 @@
+- name: Update BUILD_MVN_OPTS via script
+  ansible.builtin.command:
+    cmd: >
+      bash {{ script_file }} {{ workflow_file }} '{{ selector }}' {{ key }} '{{ value }}'
+  register: update_result
+  changed_when: "'Appending' in update_result.stdout"
+  check_mode: no
+  vars:
+    workflow_file: "{{ item.location }}"
+    selector: '{{ item.yq_selector }}'
+    script_file: "{{ role_path }}/files/yaml_update.sh"
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ what_to_update }}"
+  loop_control:
+    label: "{{ item }}"

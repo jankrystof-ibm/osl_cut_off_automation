@@ -1,0 +1,20 @@
+---
+- name: OSL cut-off
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    cloning_target_dir: /home/jkrystof/devel/projects/osl_cut_off_automation/midstream
+    snapshot_version: "999-SNAPSHOT"
+    product_version: "1.37.0"
+    product_version_short: "1.37"
+    kogito_version: "9.104.0"
+    branch_name: "{{ 9.104 }}.x-prod"
+
+    quarkus_version: '${QUARKUS_VERSION:3.20.1}'
+    kogito_images_cekit_modules__quarkus_group_id: "com.redhat.quarkus.platform"
+    kie_tools_build__build_container_images: "false"
+  roles:
+    - cut_off_products
+#    - cut_off_kubesmarts_kie_tools

@@ -1,0 +1,15 @@
+- name: Update version in package.json files
+  ansible.builtin.command:
+    cmd: "node scripts/update-version/update_version.js {{ product_version }}"
+    chdir: "{{ cloning_target_dir }}/{{ kie_tool_repository.midstream | basename }}"
+  vars:
+    kie_tool_repository: "{{ kie_tool_repositories[0] }}"
+
+- name: commit - Update version in package.json
+  include_tasks: ../../common/tasks/commit_changes_if_any.yml
+  vars:
+    repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+    commit_message: "Update version in package json file to {{ product_version }}"
+  loop: "{{ kie_tool_repositories }}"
+  loop_control:
+    label: "{{ item.midstream }}"

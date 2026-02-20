@@ -1,0 +1,32 @@
+# Idempotent check implementation
+# -------------------------------
+# git status --porcelain:
+#  - Returns empty output → no changes
+#  - Returns file list → changes exist
+
+## Step 0 — all parameters are present
+- name: Ensure needed variables are defined
+  ansible.builtin.fail:
+    msg: "Variable {{ required_var }} is needed but not defined"
+  loop:
+    - repository_folder_location
+    - commit_message
+  loop_control:
+    loop_var: required_var
+  when: vars[required_var] is not defined
+
+
+## Step 1 — Check for Changes
+- name: Check if repository has changes to commit
+  ansible.builtin.command:
+    cmd: git status --porcelain
+    chdir: "{{ repository_folder_location }}"
+  register: git_porcelain_status
+  changed_when: false
+
+## Step 2 — Commit Only If Needed
+- name: Commit changes
+  ansible.builtin.command:
+    cmd: git commit -am "{{ commit_message }}"
+    chdir: "{{ repository_folder_location }}"
+  when: git_porcelain_status.stdout != ""

@@ -1,0 +1,23 @@
+- name: Updates Kogito versions and repository references (run update_kogito_version.js)
+  ansible.builtin.command:
+    cmd: >
+      node scripts/update-kogito-version/update_kogito_version.js
+      --maven  {{ product_version }}
+      --droolsGitRef {{ branch_name }}
+      --optaplannerGitRef {{ branch_name }}
+      --kogitoRuntimesGitRef {{ branch_name }}
+      --kogitoAppsGitRef {{ branch_name }}
+      {{ product_version }}
+    chdir: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+  loop: "{{ kie_tool_repositories }}"
+  loop_control:
+    label: "{{ item.midstream }}"
+
+- name: commit - Updates Kogito versions and repository references. (run update_kogito_version.js)
+  include_tasks: ../../common/tasks/commit_changes_if_any.yml
+  vars:
+    repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+    commit_message: "Updates Kogito versions and repository references to {{ product_version }}"
+  loop: "{{ kie_tool_repositories }}"
+  loop_control:
+    label: "{{ item.midstream }}"

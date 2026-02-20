@@ -1,0 +1,45 @@
+- name: Ensure base directory exists
+  ansible.builtin.file:
+    path: "{{ cloning_target_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Clone midstream repositories - {{ item.midstream }}
+  ansible.builtin.git:
+    repo: "{{ item.midstream }}"
+    dest: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+    version: main
+    update: no
+  loop: "{{ repositories }}"
+  loop_control:
+    label: "{{ item.midstream }}"
+
+- name: Add upstream remote - upstream {{ item.upstream }} to midstream {{ item.upstream }}
+  ansible.builtin.command:
+    cmd: git remote add upstream {{ item.upstream }}
+    chdir: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+  loop: "{{ repositories }}"
+  register: add_upstream_result
+  failed_when: false
+  changed_when: "'already exists' not in add_upstream_result.stderr"
+
+- name: Fetch upstream repositories - {{ item.upstream }}
+  ansible.builtin.command:
+    cmd: git fetch upstream
+    chdir: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+  loop: "{{ repositories }}"
+
+- name: Merge upstream {{ item.upstream }} main into local {{ item.midstream }} main
+  ansible.builtin.command:
+    cmd: git merge upstream/main
+    chdir: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+  loop: "{{ repositories }}"
+
+- name: Create and checkout new release branch from main
+  ansible.builtin.command:
+    cmd: git checkout -B {{ branch_name }} main
+    chdir: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+  loop: "{{ repositories }}"
+  loop_control:
+    label: "{{ item.midstream }}"
+

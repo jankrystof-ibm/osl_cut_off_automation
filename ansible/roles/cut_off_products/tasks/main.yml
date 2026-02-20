@@ -1,0 +1,47 @@
+- name: products -- Synchronize branches and create new release branches
+  include_tasks: ../../common/tasks/synchronize_branches_and_checkout_release_branch.yml
+  vars:
+    repositories: "{{ product_repositories }}"
+
+- name: products -- Update all pom.xml files
+  include_tasks: ../../common/tasks/update_pom_files_with_new_version.yml
+  vars:
+    repositories: "{{ product_repositories }}"
+
+- name: Remove non-product modules
+  include_tasks: ../../common/tasks/remove_non_product_modules.yml
+  vars:
+    repositories: "{{ product_repositories }}"
+
+- name: Update Maven build options - ensure productized profile
+  include_tasks: update_maven_build_options.yml
+  vars:
+    what_to_update:
+      - { location: "{{ cloning_target_dir }}/kogito-examples/.github/workflows/pr-kogito-examples.yml",
+          key: "BUILD_MVN_OPTS",
+          value: "-Dproductized",
+          yq_selector: '.jobs.build-chain.steps[] | select(.name=="Build Chain").env' }
+      - { location: "{{ cloning_target_dir }}/drools/.github/workflows/pr-downstream.yml",
+          key: "BUILD_MVN_OPTS",
+          value: "-Dproductized",
+          yq_selector: '.jobs.kogito-downstream-build.strategy.matrix.include[] | select(.job_name == "serverless-workflow-examples").env' }
+      - { location: "{{ cloning_target_dir }}/drools/.github/workflows/pr-drools.yml",
+          key: "BUILD_MVN_OPTS",
+          value: "-Dproductized",
+          yq_selector: '.jobs.drools-build.steps[] | select(.name == "Build Chain").env' }
+      - { location: "{{ cloning_target_dir }}/kogito-runtimes/.github/workflows/pr-downstream.yml",
+          key: "env_BUILD_MVN_OPTS",
+          value: "-Dproductized",
+          yq_selector: '.jobs.kogito-downstream-build.strategy.matrix.include[] | select(.job_name == "kogito-apps").env' }
+      - { location: "{{ cloning_target_dir }}/kogito-runtimes/.github/workflows/pr-kogito-runtimes.yml",
+          key: "BUILD_MVN_OPTS",
+          value: "-Dproductized",
+          yq_selector: '.jobs.runtime-build.steps[] | select(.name == "Build Chain").env' }
+      - { location: "{{ cloning_target_dir }}/kogito-apps/.github/workflows/pr-kogito-apps.yml",
+          key: "BUILD_MVN_OPTS",
+          value: "-Dproductized",
+          yq_selector: '.jobs.build-chain.steps[] | select(.name == "Build Chain").env' }
+      - { location: "{{ cloning_target_dir }}/kogito-apps/.github/workflows/pr-downstream.yml",
+          key: "env_BUILD_MVN_OPTS",
+          value: !unsafe '${{ matrix.env_BUILD_MVN_OPTS }}',
+          yq_selector: '.jobs.kogito-downstream-build.strategy.matrix.include[] | select(.job_name == "serverless-workflow-examples").env' }

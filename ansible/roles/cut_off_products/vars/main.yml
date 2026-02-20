@@ -1,0 +1,5 @@
+product_repositories:
+  - { midstream: "git@github.com:kiegroup/kogito-apps", upstream: "git@github.com:apache/incubator-kie-kogito-apps" }
+  - { midstream: "git@github.com:kiegroup/drools", upstream: "git@github.com:apache/incubator-kie-drools" }
+  - { midstream: "git@github.com:kiegroup/kogito-examples", upstream: "git@github.com:apache/incubator-kie-kogito-examples" }
+  - { midstream: "git@github.com:kiegroup/kogito-runtimes", upstream: "git@github.com:apache/incubator-kie-kogito-runtimes" }

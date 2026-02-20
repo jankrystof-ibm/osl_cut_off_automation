@@ -1,0 +1,16 @@
+- name: Remove non-product modules
+  ansible.builtin.command:
+    cmd: "./productized/remove_modules.sh ./productized/modules"
+    chdir: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+  loop: "{{ product_repositories }}"
+  loop_control:
+    label: "{{ item.midstream }}"
+
+- name: Commit - Remove non-product modules
+  include_tasks: ../../common/tasks/commit_changes_if_any.yml
+  vars:
+    repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+    commit_message: "Remove non-product modules"
+  loop: "{{ product_repositories }}"
+  loop_control:
+    label: "{{ item.midstream }}"
