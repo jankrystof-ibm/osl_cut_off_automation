@@ -1,2 +1,0 @@
-kie_tool_repositories:
-  - { midstream: "git@github.com:kubesmarts/kie-tools", upstream: "git@github.com:apache/incubator-kie-tools" }

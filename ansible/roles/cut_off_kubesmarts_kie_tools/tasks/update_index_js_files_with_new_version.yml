@@ -1,50 +1,22 @@
-- name: Update OSL__branchName
-  ansible.builtin.replace:
-    path: "{{ repository_location }}//{{ file_path }}"
-    regexp: 'default:\s*"[^"]*"'
-    replace: 'default: "{{ product_version_short }}"'
-  vars:
-    file_path: "packages/redhat-env/env/index.js"
-
-
-# TOOD: !!! KOGITO_RUNTIME_version - my comment 3.c in OSL Productization cut‐off process
-# TOOD: !!! QUARKUS_PLATFORM_version - my comment 3.e in OSL Productization cut‐off process
-- name: Update KIE_TOOLS_BUILD__streamName + KOGITO_RUNTIME_version + ???????
+# TODO: !!! KOGITO_RUNTIME_version - my comment 3.c in OSL Productization cut‐off process
+# TODO: !!! QUARKUS_PLATFORM_version - my comment 3.d in OSL Productization cut‐off process
+- name: Update index.js files OSL__branchName (3.a) + KIE_TOOLS_BUILD__streamName (3.b) + KOGITO_RUNTIME_version (3.c) + QUARKUS_PLATFORM_version???????
   replace:
     path: "{{ repository_location }}/{{ file_path }}"
     regexp: "{{ item.the_regexp }}"
-    replace: "{{ item. the_replace}}"
+    replace: "{{ item.the_replace}}"
   vars:
     file_path: "packages/root-env/env/index.js"
   loop:
-    - { "the_regexp": '(\s*KIE_TOOLS_BUILD__streamName:\s*{\s*default:\s*")[^"]+(")', "the_replace": '\g<1>{{ product_version }}\g<2>' }
-    - { "the_regexp": '(\s*KOGITO_RUNTIME_version:\s*{\s*default:\s*")[^"]+(")', "the_replace": '\g<1>{{ kogito_version }}\g<2>' }
-  loop_control:
-    loop_var: item
-
-
-- name: Update supporting-files (ci/osl/.env)
-  replace:
-    path: "{{ repository_location }}/{{ file_path }}"
-    regexp: "{{ item.the_regexp }}"
-    replace: "{{ item.the_replace }}"
-  vars:
-    file_path: ".github/supporting-files/ci/osl/.env"
-  loop:
-    - { "the_regexp": "OSL__branchName=.*$", "the_replace": "OSL__branchName={{ product_version_short }}" }
-    - { "the_regexp": "KIE_TOOLS_BUILD__streamName=.*$", "the_replace": "KIE_TOOLS_BUILD__streamName={{ product_version }}" }
-    - { "the_regexp": "KOGITO_RUNTIME_version=.*$", "the_replace": "KOGITO_RUNTIME_version={{ kogito_version }}" }
-    - { "the_regexp": "SONATAFLOW_QUARKUS_DEVUI_VERSION=.*$", "the_replace": "SONATAFLOW_QUARKUS_DEVUI_VERSION={{ kogito_version }}" }
-    - { "the_regexp": "SONATAFLOW_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion=.*$", "the_replace": "SONATAFLOW_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion={{ kogito_version }}" }
-    - { "the_regexp": "QUARKUS_PLATFORM_version=.*$", "the_replace": "QUARKUS_PLATFORM_version={{ quarkus_version }}" }
-    - { "the_regexp": "KOGITO_IMAGES_CEKIT_MODULES__quarkusGroupId=.*$", "the_replace": "KOGITO_IMAGES_CEKIT_MODULES__quarkusGroupId={{ kogito_images_cekit_modules__quarkus_group_id }}" }
-    - { "the_regexp": "KIE_TOOLS_BUILD__buildContainerImages=.*$", "the_replace": "KIE_TOOLS_BUILD__buildContainerImages={{ kie_tools_build__build_container_images }}" }
+    - { file_path: "packages/redhat-env/env/index.js", "the_regexp": 'default:\s*"[^"]*"', "the_replace": 'default: "{{ product_version_short }}"' }
+    - { file_path: "packages/root-env/env/index.js", "the_regexp": '(\s*KIE_TOOLS_BUILD__streamName:\s*{\s*default:\s*")[^"]+(")', "the_replace": '\g<1>{{ product_version }}\g<2>' }
+    - { file_path: "packages/root-env/env/index.js", "the_regexp": '(\s*KOGITO_RUNTIME_version:\s*{\s*default:\s*")[^"]+(")', "the_replace": '\g<1>{{ kogito_version }}\g<2>' }
   loop_control:
     loop_var: item
 
 # TODO: JS validation here
 
-- name: commit - Update supporting-files (ci/osl/.env)
+- name: commit - Update index.js files
   include_tasks: ../../common/tasks/commit_changes_if_any.yml
   vars:
     repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"

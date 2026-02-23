@@ -1,4 +1,4 @@
-- name: Update BUILD_MVN_OPTS via script
+- name: Update Maven build options (add productized profile)
   ansible.builtin.command:
     cmd: >
       bash {{ script_file }} {{ workflow_file }} '{{ selector }}' {{ key }} '{{ value }}'
@@ -6,11 +6,46 @@
   changed_when: "'Appending' in update_result.stdout"
   check_mode: no
   vars:
-    workflow_file: "{{ item.location }}"
+    workflow_file: "{{ cloning_target_dir }}/{{ item.location }}"
     selector: '{{ item.yq_selector }}'
-    script_file: "{{ role_path }}/files/yaml_update.sh"
+    script_file: "{{ role_path }}/files/yaml_update__create_key_or_extend_existing_one.sh"
     key: "{{ item.key }}"
     value: "{{ item.value }}"
-  loop: "{{ what_to_update }}"
+  loop:
+    - { location: "kogito-examples/.github/workflows/pr-kogito-examples.yml",
+        key: "BUILD_MVN_OPTS",
+        value: "-Dproductized",
+        yq_selector: '.jobs.build-chain.steps[] | select(.name=="Build Chain").env' }
+    - { location: "drools/.github/workflows/pr-downstream.yml",
+        key: "BUILD_MVN_OPTS",
+        value: "-Dproductized",
+        yq_selector: '.jobs.kogito-downstream-build.strategy.matrix.include[] | select(.job_name == "serverless-workflow-examples").env' }
+    - { location: "drools/.github/workflows/pr-drools.yml",
+        key: "BUILD_MVN_OPTS",
+        value: "-Dproductized",
+        yq_selector: '.jobs.drools-build.steps[] | select(.name == "Build Chain").env' }
+    - { location: "kogito-runtimes/.github/workflows/pr-downstream.yml",
+        key: "env_BUILD_MVN_OPTS",
+        value: "-Dproductized",
+        yq_selector: '.jobs.kogito-downstream-build.strategy.matrix.include[] | select(.job_name == "kogito-apps").env' }
+    - { location: "kogito-runtimes/.github/workflows/pr-kogito-runtimes.yml",
+        key: "BUILD_MVN_OPTS",
+        value: "-Dproductized",
+        yq_selector: '.jobs.runtime-build.steps[] | select(.name == "Build Chain").env' }
+    - { location: "kogito-apps/.github/workflows/pr-kogito-apps.yml",
+        key: "BUILD_MVN_OPTS",
+        value: "-Dproductized",
+        yq_selector: '.jobs.build-chain.steps[] | select(.name == "Build Chain").env' }
+    - { location: "kogito-apps/.github/workflows/pr-downstream.yml",
+        key: "env_BUILD_MVN_OPTS",
+        value: !unsafe '${{ matrix.env_BUILD_MVN_OPTS }}',
+        yq_selector: '.jobs.kogito-downstream-build.strategy.matrix.include[] | select(.job_name == "serverless-workflow-examples").env' }
+
+- name: Commit - Update Maven build options (add productized profile)
+  include_tasks: ../../common/tasks/commit_changes_if_any.yml
+  vars:
+    repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+    commit_message: "add productized profile"
+  loop: "{{ product_repositories }}"
   loop_control:
-    label: "{{ item }}"
+    label: "{{ item.midstream }}"

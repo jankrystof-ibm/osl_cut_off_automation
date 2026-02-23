@@ -1,0 +1,63 @@
+- name: Updates github workflows and osl images
+  ansible.builtin.command:
+    cmd: >
+      bash {{ script_file }} {{ workflow_file }} '{{ selector }}' {{ key }} '{{ value }}'
+  register: update_result
+  changed_when: "'Appending' in update_result.stdout"
+  check_mode: no
+  vars:
+    workflow_file: "{{ cloning_target_dir }}/{{ item.location }}"
+    selector: '{{ item.yq_selector_path }}'
+    property: '{{ item.property }}'
+    script_file: "{{ role_path }}/../common/files/yaml_update__ensure_key_and_vaue_exist.sh"
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop:
+    ## TODO: unicode issue in kie-tools/.github/workflows/osl_export_images.yml
+    - { location: "kie-tools/.github/workflows/osl_export_images.yml",
+        key: "with.ref",
+        value: "{{ branch_name }}",
+        yq_selector_path: '.jobs.export_dist.steps[] | select(.name=="Checkout Source Repository")'
+    }
+    - { location: "kie-tools/.github/workflows/osl_export_images.yml",
+        key: "with.KOGITO_VERSION",
+        value: "{{ kogito_version }}",
+        yq_selector_path: '.jobs.export_dist.steps[] | select(.name=="Setup kie-tools repository")'
+    }
+    - { location: "kie-tools/.github/workflows/osl_export_images.yml",
+        key: "env.BRANCH",
+        value: "{{ branch_name }}",
+        yq_selector_path: '.jobs.export_dist.steps[] | select(.name=="Create Pull Request")'
+    }
+    - { location: "kie-tools/.github/actions/setup-maven-cache/action.yml",
+        key: "default",
+        value: "{{ branch_name }}",
+        yq_selector_path: '.inputs.DEPS_BRANCHNAME'
+    }
+    - { location: "kie-tools/.github/workflows/ci_build_midstream.yml",
+        key: "with.DEPS_BRANCHNAME",
+        value: "{{ branch_name }}",
+        yq_selector_path: '.jobs.build.steps[] | select(.name=="Setup local maven cache")'
+    }
+    - { location: "kie-tools/.github/workflows/ci_build_midstream.yml",
+        key: "env.KOGITO_RUNTIME_version",
+        value: "{{ kogito_version }}",
+        yq_selector_path: '.jobs.build.steps[] | select(.name=="Run pnpm bootstrap - first time")'
+    }
+    - { location: "kie-tools/.github/workflows/ci_build_midstream.yml",
+        key: "env.KOGITO_RUNTIME_version",
+        value: "{{ kogito_version }}",
+        yq_selector_path: '.jobs.build.steps[] | select(.name=="Prepare maven-base with .mvn/maven.config")'
+    }
+    - { location: "kie-tools/.github/workflows/ci_build_midstream.yml",
+        key: "env.KOGITO_RUNTIME_version",
+        value: "{{ kogito_version }}",
+        yq_selector_path: '.jobs.build.steps[] | select(.name=="Build KIE Tools")'
+    }
+
+- name: commit - Updates github workflows and osl images
+  include_tasks: ../../common/tasks/commit_changes_if_any.yml
+  vars:
+    repository_folder_location: "{{ repository_location }}"
+    commit_message: "Updates github workflows and osl images to {{ product_version }}"
+

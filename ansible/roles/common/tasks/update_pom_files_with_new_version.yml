@@ -20,4 +20,3 @@
   loop: "{{ repositories }}"
   loop_control:
     label: "{{ item.midstream }}"
-

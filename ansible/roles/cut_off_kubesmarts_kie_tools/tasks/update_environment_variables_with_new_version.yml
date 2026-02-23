@@ -1,0 +1,28 @@
+- name: Update environment variables (ci/osl/.env)
+  replace:
+    path: "{{ repository_location }}/{{ file_path }}"
+    regexp: "{{ item.the_regexp }}"
+    replace: "{{ item.the_replace }}"
+  vars:
+    file_path: ".github/supporting-files/ci/osl/.env"
+  loop:
+    - { "the_regexp": "JAVA_RUNTIME_VERSION=.*$", "the_replace": "JAVA_RUNTIME_VERSION={{ kogito_version }}" }
+    - { "the_regexp": "OSL__branchName=.*$", "the_replace": "OSL__branchName={{ product_version_short }}" }
+    - { "the_regexp": "KIE_TOOLS_BUILD__streamName=.*$", "the_replace": "KIE_TOOLS_BUILD__streamName={{ product_version }}" }
+    - { "the_regexp": "KOGITO_RUNTIME_version=.*$", "the_replace": "KOGITO_RUNTIME_version={{ kogito_version }}" }
+    - { "the_regexp": "SONATAFLOW_QUARKUS_DEVUI_VERSION=.*$", "the_replace": "SONATAFLOW_QUARKUS_DEVUI_VERSION={{ kogito_version }}" }
+    - { "the_regexp": "SONATAFLOW_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion=.*$", "the_replace": "SONATAFLOW_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion={{ kogito_version }}" }
+    - { "the_regexp": "QUARKUS_PLATFORM_version=.*$", "the_replace": "QUARKUS_PLATFORM_version={{ quarkus_version }}" }
+    - { "the_regexp": "KOGITO_IMAGES_CEKIT_MODULES__quarkusGroupId=.*$", "the_replace": "KOGITO_IMAGES_CEKIT_MODULES__quarkusGroupId={{ kogito_images_cekit_modules__quarkus_group_id }}" }
+    - { "the_regexp": "KIE_TOOLS_BUILD__buildContainerImages=.*$", "the_replace": "KIE_TOOLS_BUILD__buildContainerImages={{ kie_tools_build__build_container_images }}" }
+  loop_control:
+    loop_var: item
+
+- name: commit - Update environment variables (ci/osl/.env)
+  include_tasks: ../../common/tasks/commit_changes_if_any.yml
+  vars:
+    repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+    commit_message: "Update environment variables (ci/osl/.env) to {{ product_version }}"
+  loop: "{{ kie_tool_repositories }}"
+  loop_control:
+    label: "{{ item.midstream }}"

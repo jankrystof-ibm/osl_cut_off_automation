@@ -4,7 +4,7 @@
     state: directory
     mode: '0755'
 
-- name: Clone midstream repositories - {{ item.midstream }}
+- name: Clone midstream repositories
   ansible.builtin.git:
     repo: "{{ item.midstream }}"
     dest: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
