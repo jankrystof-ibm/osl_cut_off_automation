@@ -50,3 +50,5 @@
   vars:
     repository_location: "{{ cloning_target_dir }}/{{ kie_tool_repositories[0].midstream | basename }}"
 
+# TODO: step 9::Cut-off for kubesmarts/kie-tools repository: Add -Dproductized in the workflows like
+# after
