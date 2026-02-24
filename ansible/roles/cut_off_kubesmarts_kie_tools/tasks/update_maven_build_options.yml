@@ -1,0 +1,26 @@
+# TODO: after https://github.com/kubesmarts/kie-tools/pull/246
+
+#- name: Update Maven build options (add productized profile)
+#  ansible.builtin.command:
+#    cmd: >
+#      bash {{ script_file }} {{ workflow_file }} '{{ selector }}' {{ key }} '{{ value }}'
+#  register: update_result
+#  changed_when: "'Appending' in update_result.stdout"
+#  check_mode: no
+#  vars:
+#    workflow_file: "{{ cloning_target_dir }}/{{ item.location }}"
+#    selector: '{{ item.yq_selector }}'
+#    script_file: "{{ role_path }}/../common/files/yaml_update__create_key_or_extend_existing_one.sh"
+#    key: "{{ item.key }}"
+#    value: "{{ item.value }}"
+#  loop:
+#    - { ... }
+#
+#- name: Commit - Update Maven build options (add productized profile)
+#  include_tasks: ../../common/tasks/commit_changes_if_any.yml
+#  vars:
+#    repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+#    commit_message: "add productized profile"
+#  loop: "{{ product_repositories }}"
+#  loop_control:
+#    label: "{{ item.midstream }}"

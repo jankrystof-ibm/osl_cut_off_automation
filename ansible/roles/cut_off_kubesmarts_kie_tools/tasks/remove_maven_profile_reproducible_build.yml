@@ -8,3 +8,13 @@
       m: "http://maven.apache.org/POM/4.0.0"
   vars:
     file_path: "packages/maven-base/pom.xml"
+
+
+- name: commit - Remove maven profile reproducible-build from pom.xml
+  include_tasks: ../../common/tasks/commit_changes_if_any.yml
+  vars:
+    repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+    commit_message: "Remove maven profile reproducible-build from pom.xml"
+  loop: "{{ kie_tool_repositories }}"
+  loop_control:
+    label: "{{ item.midstream }}"

@@ -8,7 +8,7 @@
   vars:
     workflow_file: "{{ cloning_target_dir }}/{{ item.location }}"
     selector: '{{ item.yq_selector }}'
-    script_file: "{{ role_path }}/files/yaml_update__create_key_or_extend_existing_one.sh"
+    script_file: "{{ role_path }}/../common/files/yaml_update__create_key_or_extend_existing_one.sh"
     key: "{{ item.key }}"
     value: "{{ item.value }}"
   loop:

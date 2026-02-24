@@ -24,24 +24,29 @@
   vars:
     repository_location: "{{ cloning_target_dir }}/{{ kie_tool_repositories[0].midstream | basename }}"
 
-# TOOD: this may not not needed ...
-- name: Export environment variables and bootstrap each image package that needs to be productized
-  include_tasks: export_env_vars_and_bootstrap_image_packages.yml
-  vars:
-    repository_location: "{{ cloning_target_dir }}/{{ kie_tool_repositories[0].midstream | basename }}"
+## TOOD: this may not not needed ...
+##- name: Export environment variables and bootstrap each image package that needs to be productized
+##  include_tasks: export_env_vars_and_bootstrap_image_packages.yml
+##  vars:
+##    repository_location: "{{ cloning_target_dir }}/{{ kie_tool_repositories[0].midstream | basename }}"
 
 - name: Update pom.xml file
   include_tasks: ../../common/tasks/update_pom_files_with_new_version.yml
   vars:
-    repositories: "{{ product_repositories }}"#
+    repositories: "{{ kie_tool_repositories }}"
 
 - name: Updates github workflows and osl images
   include_tasks: update_github_workflows_and_osl_images.yml
   vars:
     repository_location: "{{ cloning_target_dir }}/{{ kie_tool_repositories[0].midstream | basename }}"
 
+- name: Remove maven profile reproducible-build
+  include_tasks: remove_maven_profile_reproducible_build.yml
+  vars:
+    repository_location: "{{ cloning_target_dir }}/{{ kie_tool_repositories[0].midstream | basename }}"
 
 - name: Remove maven profile reproducible-build
   include_tasks: remove_maven_profile_reproducible_build.yml
   vars:
     repository_location: "{{ cloning_target_dir }}/{{ kie_tool_repositories[0].midstream | basename }}"
+
