@@ -38,7 +38,7 @@ yq eval -i "(${SELECTOR}) |= ((. // {}) + {\"${KEY}\": (.${KEY} // \"\")})" "$FI
 # read current value
 current_value=$(yq eval "${SELECTOR}.${KEY}" "$FILE_LOCATION")
 
-# add
+# add teh value
 if [[ "$current_value" != *"${VALUE}"* ]]; then
     yq eval -i "(${SELECTOR}.${KEY}) |= (. + \" ${VALUE}\")" "$FILE_LOCATION"
     echo "$CHANGED_MSG"

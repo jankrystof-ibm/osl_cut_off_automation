@@ -33,7 +33,6 @@ VALUE="${4:?Specify value for the key}"
 
 CURRENT_VALUE=$(yq eval "(${SELECTOR}).${KEY} // \"\"" "$FILE_LOCATION")
 
-
 if [ "$CURRENT_VALUE" != "$VALUE" ]; then
   yq -py eval -i "(${SELECTOR}).${KEY} = \"${VALUE}\"" "$FILE_LOCATION"
   CHANGED_MSG="Appending ${VALUE}"

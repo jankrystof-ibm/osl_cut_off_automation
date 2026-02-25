@@ -42,10 +42,10 @@
         yq_selector: '.jobs.kogito-downstream-build.strategy.matrix.include[] | select(.job_name == "serverless-workflow-examples").env' }
 
 - name: Commit - Update Maven build options (add productized profile)
-  include_tasks: ../../common/tasks/commit_changes_if_any.yml
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
   vars:
     repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
-    commit_message: "add productized profile"
+    commit_message: "Add productized profile"
   loop: "{{ product_repositories }}"
   loop_control:
     label: "{{ item.midstream }}"

@@ -9,7 +9,7 @@ REPO_PATH=$1
 CONF_FILES=$(git -C "$REPO_PATH" diff --name-only --diff-filter=U)
 
 if [ -z "$CONF_FILES" ]; then
-    echo "no conflicts...
+    echo "no conflicts..."
 fi
 
 # 2. check one by file

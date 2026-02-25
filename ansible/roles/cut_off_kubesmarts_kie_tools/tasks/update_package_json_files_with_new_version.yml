@@ -5,11 +5,11 @@
   vars:
     kie_tool_repository: "{{ kie_tool_repositories[0] }}"
 
-- name: commit - Update version in package.json
-  include_tasks: ../../common/tasks/commit_changes_if_any.yml
+- name: Commit - Update version in package.json
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
   vars:
     repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
-    commit_message: "Update version in package json file to {{ product_version }}"
+    commit_message: "Update version in package json files"
   loop: "{{ kie_tool_repositories }}"
   loop_control:
     label: "{{ item.midstream }}"

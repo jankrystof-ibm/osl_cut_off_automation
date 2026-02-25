@@ -7,7 +7,7 @@
     label: "{{ item.midstream }}"
 
 - name: Commit - Remove non-product modules
-  include_tasks: ../../common/tasks/commit_changes_if_any.yml
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
   vars:
     repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
     commit_message: "Remove non-product modules"

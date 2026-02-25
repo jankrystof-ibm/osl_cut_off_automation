@@ -13,7 +13,6 @@
     key: "{{ item.key }}"
     value: "{{ item.value }}"
   loop:
-    ## TODO: unicode issue in kie-tools/.github/workflows/osl_export_images.yml
     - { location: "kie-tools/.github/workflows/osl_export_images.yml",
         key: "with.ref",
         value: "{{ branch_name }}",
@@ -40,24 +39,14 @@
         yq_selector_path: '.jobs.build.steps[] | select(.name=="Setup local maven cache")'
     }
     - { location: "kie-tools/.github/workflows/ci_build_midstream.yml",
-        key: "env.KOGITO_RUNTIME_version",
+        key: "KOGITO_RUNTIME_version",
         value: "{{ kogito_version }}",
-        yq_selector_path: '.jobs.build.steps[] | select(.name=="Run pnpm bootstrap - first time")'
+        yq_selector_path: '.env'
     }
-    - { location: "kie-tools/.github/workflows/ci_build_midstream.yml",
-        key: "env.KOGITO_RUNTIME_version",
-        value: "{{ kogito_version }}",
-        yq_selector_path: '.jobs.build.steps[] | select(.name=="Prepare maven-base with .mvn/maven.config")'
-    }
-    - { location: "kie-tools/.github/workflows/ci_build_midstream.yml",
-        key: "env.KOGITO_RUNTIME_version",
-        value: "{{ kogito_version }}",
-        yq_selector_path: '.jobs.build.steps[] | select(.name=="Build KIE Tools")'
-    }
-
-- name: commit - Updates github workflows and osl images
-  include_tasks: ../../common/tasks/commit_changes_if_any.yml
+#### TODO: perhaps kie-tools/.github/workflows/ci_build.yml
+#
+- name: Commit - Updates github workflows and osl images
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
   vars:
     repository_folder_location: "{{ repository_location }}"
-    commit_message: "Updates github workflows and osl images to {{ product_version }}"
-
+    commit_message: "Updates github workflows and osl images"

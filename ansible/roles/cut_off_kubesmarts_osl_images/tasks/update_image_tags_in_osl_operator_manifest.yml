@@ -1,0 +1,23 @@
+  - name: Find all yaml files except excluded directories
+    find:
+      paths: "{{ repository_folder_location }}"
+      patterns: "{{ file_name_pattern }}"
+      recurse: yes
+      excludes: "{{ excluded_dirs }}"
+    register: yaml_files
+
+  - name: Replace version string in yaml files
+    replace:
+      path: "{{ item.path }}"
+      regexp: "{{ to_find }}"
+      replace: "{{ replacement }}"
+    loop: "{{ yaml_files.files }}"
+
+  - name: Commit - Update image tags in OSL operator manifest
+    include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
+    vars:
+      repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+      commit_message: "Update image tags in OSL operator manifest"
+    loop: "{{ osl_images_repositories }}"
+    loop_control:
+      label: "{{ item.midstream }}"

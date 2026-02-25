@@ -19,6 +19,7 @@
     cmd: git remote add upstream {{ item.upstream }}
     chdir: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
   loop: "{{ repositories }}"
+  when: item.upstream is defined
   register: add_upstream_result
   failed_when: false
   changed_when: "'already exists' not in add_upstream_result.stderr"
@@ -28,12 +29,14 @@
     cmd: git fetch upstream
     chdir: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
   loop: "{{ repositories }}"
+  when: item.upstream is defined
 
 - name: Merge upstream {{ item.upstream }} main into local {{ item.midstream }} main
   ansible.builtin.command:
     cmd: git merge upstream/main
     chdir: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
   loop: "{{ repositories }}"
+  when: item.upstream is defined
 
 - name: Create and checkout new release branch from main
   ansible.builtin.command:
@@ -42,4 +45,3 @@
   loop: "{{ repositories }}"
   loop_control:
     label: "{{ item.midstream }}"
-

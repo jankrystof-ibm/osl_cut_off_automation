@@ -11,20 +11,12 @@
         -F 'osl-management-console-image...' 
         -F 'osl-db-migrator-tool-image...' 
         -F 'osl-operator-bundle-image...' 
-        -F  --workspace-concurrency=1 
-      
-      node scripts/update-kogito-version/update_kogito_version.js
-      --maven  {{ product_version }}
-      --droolsGitRef {{ branch_name }}
-      --optaplannerGitRef {{ branch_name }}
-      --kogitoRuntimesGitRef {{ branch_name }}
-      --kogitoAppsGitRef {{ branch_name }}
-      {{ product_version }}
+        -F  --workspace-concurrency=1
     chdir: "{{ repository_location }}"
 
 
-- name: commit - Update version in package.json
-  include_tasks: ../../common/tasks/commit_changes_if_any.yml
+- name: Commit - Update version in package.json
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
   vars:
     repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
     commit_message:

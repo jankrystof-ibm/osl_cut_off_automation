@@ -18,11 +18,11 @@
   loop_control:
     loop_var: item
 
-- name: commit - Update environment variables (ci/osl/.env)
-  include_tasks: ../../common/tasks/commit_changes_if_any.yml
+- name: Commit - Update environment variables (ci/osl/.env)
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
   vars:
     repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
-    commit_message: "Update environment variables (ci/osl/.env) to {{ product_version }}"
+    commit_message: "Update environment variables (ci/osl/.env)"
   loop: "{{ kie_tool_repositories }}"
   loop_control:
     label: "{{ item.midstream }}"

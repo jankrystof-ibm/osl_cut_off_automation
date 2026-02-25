@@ -16,7 +16,7 @@
   include_tasks: commit_changes_if_any.yml
   vars:
     repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
-    commit_message: "Update version from {{ snapshot_version }} to {{ kogito_version }} in pom.xml files"
+    commit_message: "Update version in pom.xml files"
   loop: "{{ repositories }}"
   loop_control:
     label: "{{ item.midstream }}"
