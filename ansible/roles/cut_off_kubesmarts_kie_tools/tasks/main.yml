@@ -1,5 +1,5 @@
-- name: Synchronize branches and create new release branches
-  include_tasks: "{{ playbook_dir }}/roles/common/tasks/synchronize_branches_and_checkout_release_branch.yml"
+- name: Synchronize branches, sync optionally and create new release branches
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/clone_repositories_sync_optionally_and_checkout_release_branch.yml"
   vars:
     repositories: "{{ kie_tool_repositories }}"
 

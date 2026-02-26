@@ -1,0 +1,26 @@
+- name: Ensure base directory exists
+  ansible.builtin.file:
+    path: "{{ cloning_target_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Clone midstream repositories
+  ansible.builtin.git:
+    repo: "{{ item.midstream }}"
+    dest: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+    version: main
+    update: no
+  loop: "{{ repositories }}"
+  loop_control:
+    label: "{{ item.midstream }}"
+
+- include_tasks: "{{ playbook_dir }}/roles/common/tasks/synchronize_branches.yml"
+  when: sync_with_upstream_enabled | bool
+
+- name: Create and checkout new release branch from main
+  ansible.builtin.command:
+    cmd: git checkout -B {{ branch_name }} main
+    chdir: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+  loop: "{{ repositories }}"
+  loop_control:
+    label: "{{ item.midstream }}"

@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e
+THIS_SCRIPT_DIR="$(dirname $(realpath "$0"))"
+
+
+DOCKER_IMAGE_VERSION=$($THIS_SCRIPT_DIR/version.sh $THIS_SCRIPT_DIR/CHANGELOG.md)
+DOCKER_IMAGE_NAME=able/automation_osl_cutoff
+
+DOCKER_IMAGE="$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION"
+DOCKER_IMAGE_LATEST="$DOCKER_IMAGE_NAME:latest"
+
+echo "Building $DOCKER_IMAGE ..."
+docker build -t $DOCKER_IMAGE $THIS_SCRIPT_DIR
+
+NEW_IMAGE_ID=$(docker images -q $DOCKER_IMAGE)
+docker tag $NEW_IMAGE_ID $DOCKER_IMAGE_NAME
+ 

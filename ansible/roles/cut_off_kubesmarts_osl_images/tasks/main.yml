@@ -1,5 +1,5 @@
-- name: Synchronize branches and create new release branches
-  include_tasks: "{{ playbook_dir }}/roles/common/tasks/synchronize_branches_and_checkout_release_branch.yml"
+- name: Synchronize branches, sync optionally and create new release branches
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/clone_repositories_sync_optionally_and_checkout_release_branch.yml"
   vars:
     repositories: "{{ osl_images_repositories }}"
 
@@ -7,7 +7,7 @@
   include_tasks: "{{ playbook_dir }}/roles/common/tasks/update_pom_files_with_new_version.yml"
   vars:
     repositories: "{{ osl_images_repositories }}"
-#
+
 - name: Update image tags in OSL operator manifest
   include_tasks: update_image_tags_in_osl_operator_manifest.yml
   vars:

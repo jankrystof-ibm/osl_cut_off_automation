@@ -3,40 +3,33 @@
   hosts: localhost
   connection: local
   gather_facts: false
+  vars_files:
+    - "{{ vars_location | default('defaults.yml') }}"
 
   vars:
+    # override via command line
     cloning_target_dir: "{{ playbook_dir }}/../OUT"
-    snapshot_version: "999-SNAPSHOT"
-    product_version: "1.37.0"
-    product_version_short: "1.37"
-    kogito_version: "9.104.0"
-    branch_name: "{{ 9.104 }}.x-prod"
+    # override via command line
+    sync_with_upstream_enabled: false
 
   roles:
 
     - role: cut_off_products
       vars:
-        product_repositories:
-          - { midstream: "git@github.com:kiegroup/kogito-apps", upstream: "git@github.com:apache/incubator-kie-kogito-apps" }
-          - { midstream: "git@github.com:kiegroup/drools", upstream: "git@github.com:apache/incubator-kie-drools" }
-          - { midstream: "git@github.com:kiegroup/kogito-examples", upstream: "git@github.com:apache/incubator-kie-kogito-examples" }
-          - { midstream: "git@github.com:kiegroup/kogito-runtimes", upstream: "git@github.com:apache/incubator-kie-kogito-runtimes" }
+        product_repositories: "{{ cut_off_products.product_repositories }}"
 
     - role: cut_off_kubesmarts_kie_tools
       vars:
-        kogito_images_cekit_modules__quarkus_group_id: "com.redhat.quarkus.platform"
-        quarkus_version: '${QUARKUS_VERSION:3.20.1}' # The quarkus version is clarified while CUT off starts. We should take the latest version available from RHBQ releases
-        kie_tools_build__build_container_images: "false"
-        kie_tool_repositories:
-          - { midstream: "git@github.com:kubesmarts/kie-tools", upstream: "git@github.com:apache/incubator-kie-tools" }
+        kogito_images_cekit_modules__quarkus_group_id: "{{ cut_off_kubesmarts_kie_tools.kogito_images_cekit_modules__quarkus_group_id }}"
+        quarkus_version: "{{ cut_off_kubesmarts_kie_tools.quarkus_version }}"
+        kie_tools_build__build_container_images: "{{ cut_off_kubesmarts_kie_tools.kie_tools_build__build_container_images }}"
+        kie_tool_repositories: "{{ cut_off_kubesmarts_kie_tools.kie_tool_repositories }}"
 
     - role: cut_off_kubesmarts_osl_images
       vars:
-        rhel_version: 9
-        rhel_platform: "rhel{{rhel_version}}"
-
-        osbs_repository_branch: "update me" # e.g. openshift-serverless-1.37-rhel-9
-        git_reference_to_kubesmarts_kie_tools: "update me" # reference (i.e. commit) to source code of kubesmarts/kie-tools (update rhel operator image)
-        osl_image_tag: "{{ product_version_short }}" # the `osl_image_tag` will replace occurrences of 999.0.0.main
-        osl_images_repositories:
-          - { midstream: "git@github.com:kubesmarts/osl-images" }
+        rhel_version: "{{ cut_off_kubesmarts_osl_images.rhel_version }}"
+        rhel_platform: "{{ cut_off_kubesmarts_osl_images.rhel_platform }}"
+        osbs_repository_branch: "{{ cut_off_kubesmarts_osl_images.osbs_repository_branch }}"
+        git_reference_to_kubesmarts_kie_tools: "{{ cut_off_kubesmarts_osl_images.git_reference_to_kubesmarts_kie_tools }}"
+        osl_image_tag: "{{ cut_off_kubesmarts_osl_images.osl_image_tag }}"
+        osl_images_repositories: "{{ cut_off_kubesmarts_osl_images.osl_images_repositories }}"
