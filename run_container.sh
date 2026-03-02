@@ -17,6 +17,7 @@ echo print 1
 ls -la $ANSIBLE_DIR_HOST
 echo print 2
 docker run --rm -v $ANSIBLE_DIR_HOST:/tmp/x $CONTAINER_IMAGE ls -la /tmp/x
+echo "ANSIBLE_DIR_HOST=$ANSIBLE_DIR_HOST"
 
 #if [[ ! -d "$CLONE_OUT_HOST" ]]; then
 #  echo "Host directory CLONE_OUT_HOST does not exist: $CLONE_OUT_HOST"
