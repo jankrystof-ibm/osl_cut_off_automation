@@ -26,7 +26,7 @@ if [[ ! -d "$ANSIBLE_DIR_HOST" ]]; then
   exit 1
 fi
 echo qwert
-ls -la ANSIBLE_DIR_HOST $ANSIBLE_DIR_HOST
+ls -la $ANSIBLE_DIR_HOST
 
 if [[ ! -f "$SSH_KEY_LOCATION" ]]; then
   echo "SSH key not found: $SSH_KEY_LOCATION"
