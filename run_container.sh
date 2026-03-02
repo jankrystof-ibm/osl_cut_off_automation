@@ -6,12 +6,12 @@ THIS_SCRIPT_DIR="$(dirname $(realpath "$0"))"
 
 # Required/optional environment variables:
 #   CLONE_OUT_HOST (required)
-#   CLONE_OUT_CONTAINER (optional)
 #   SSH_KEY_LOCATION (required)
 
 : "${CLONE_OUT_HOST:?CLONE_OUT_HOST is not set}"
 : "${SSH_KEY_LOCATION:?SSH_KEY_LOCATION is not set}"
 : "${ANSIBLE_DIR_HOST:=$THIS_SCRIPT_DIR/ansible}"
+: "${CONTAINER_IMAGE:=quay.io/rh-ee-jkrystof/osl_cut_off_automation:latest}"
 
 
 ls $ANSIBLE_DIR_HOST
@@ -31,41 +31,34 @@ if [[ ! -f "$SSH_KEY_LOCATION" ]]; then
   exit 1
 fi
 
+
+# prepare configuration for git
+TMP_SSH_DIR=$(mktemp -d)
+chmod 700 "$TMP_SSH_DIR"
+
+# copy ssh private key
+cp "$SSH_KEY_LOCATION" "$TMP_SSH_DIR/id_rsa"
+chmod 600 "$TMP_SSH_DIR/id_rsa"
+
+ssh-keyscan github.com >> "$TMP_SSH_DIR/known_hosts" 2>/dev/null
+GIT_SSH_COMMAND="ssh -i $TMP_SSH_DIR/id_rsa -o UserKnownHostsFile=$TMP_SSH_DIR/known_hosts -o StrictHostKeyChecking=yes"
+
+
+
 docker run --rm \
-  -v "${CLONE_OUT_HOST}:/tmp/osl_cut_off/OUT" \
-  -v "${ANSIBLE_DIR_HOST}:/tmp/osl_cut_off/ansible:ro" \
-  -v "${SSH_KEY_LOCATION}:/tmp/osl_cut_off/ci_ssh_key:ro" \
-  able/automation_osl_cutoff:latest \
+  -e GIT_SSH_COMMAND="$GIT_SSH_COMMAND" \
+  -v "${TMP_SSH_DIR}:${TMP_SSH_DIR}:ro" \
+  -v "${CLONE_OUT_HOST}:/tmp/osl_cut_off_automation/OUT" \
+  -v "${ANSIBLE_DIR_HOST}:/tmp/osl_cut_off_automation/ansible:ro" \
+  $CONTAINER_IMAGE \
   bash -c '
     set -euo pipefail
 
     echo "Preparing SSH environment..."
-
-    mkdir -p ~/.ssh
-    chmod 700 ~/.ssh
-
-    # Copy key into proper location
-    cp /tmp/osl_cut_off/ci_ssh_key ~/.ssh/id_ed25519
-    chmod 600 ~/.ssh/id_ed25519
-	
-	# Add GitHub to known_hosts
-	ssh-keyscan github.com >> ~/.ssh/known_hosts
-	chmod 644 ~/.ssh/known_hosts
-
-    # Start ssh-agent
-    eval "$(ssh-agent -s)"
-
-    # Add key
-    ssh-add ~/.ssh/id_ed25519
-
-    echo "Loaded SSH identities:"
-    ssh-add -l
+    # Setup git identities
+    git config --global user.name "pepa zdepa"
+    git config --global user.email "pepa@z.depa"
 
     echo "Mounted clone directory:"
-    cd /tmp/osl_cut_off/ansible
-    ansible-playbook play__osl_cut_off.yml -e cloning_target_dir=/tmp/osl_cut_off/OUT
-
-
-	#git -C /tmp/osl_cut_off/OUT clone git@github.com:kubesmarts/osl-images
-  '
-  
+    cd /tmp/osl_cut_off_automation/ansible
+    ansible-playbook play__osl_cut_off.yml -e cloning_target_dir=/tmp/osl_cut_off_automation/OUT
