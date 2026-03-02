@@ -8,8 +8,8 @@
   vars:
     repositories: "{{ kie_tool_repositories }}"
 
-- name: Update version in package.json files
-  include_tasks: update_package_json_files_with_new_version.yml
+#- name: Update version in package.json files
+#  include_tasks: update_package_json_files_with_new_version.yml
 
 - name: Updates Kogito versions and repository references
   include_tasks: updates_kogito_versions.yml

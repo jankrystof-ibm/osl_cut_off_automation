@@ -22,8 +22,6 @@ if [[ ! -d "$ANSIBLE_DIR_HOST" ]]; then
   echo "Host directory ANSIBLE_DIR_HOST does not exist: $ANSIBLE_DIR_HOST"
   exit 1
 fi
-echo qwert
-ls -la $ANSIBLE_DIR_HOST
 
 if [[ ! -f "$SSH_KEY_LOCATION" ]]; then
   echo "SSH key not found: $SSH_KEY_LOCATION"
@@ -42,10 +40,6 @@ chmod 600 "$TMP_SSH_DIR/id_rsa"
 ssh-keyscan github.com >> "$TMP_SSH_DIR/known_hosts" 2>/dev/null
 GIT_SSH_COMMAND="ssh -i $TMP_SSH_DIR/id_rsa -o UserKnownHostsFile=$TMP_SSH_DIR/known_hosts -o StrictHostKeyChecking=yes"
 
-export ANSIBLE_DIR_HOST=$ANSIBLE_DIR_HOST
-echo xxx1
-echo "${ANSIBLE_DIR_HOST}:/tmp/osl_cut_off_automation/ansible:ro"
-ls -la ${ANSIBLE_DIR_HOST}
 docker run --rm \
   -e GIT_SSH_COMMAND="$GIT_SSH_COMMAND" \
   -v "${TMP_SSH_DIR}:${TMP_SSH_DIR}:ro" \

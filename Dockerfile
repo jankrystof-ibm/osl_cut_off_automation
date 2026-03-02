@@ -15,6 +15,7 @@ RUN dnf -y update && \
         python3-devel \
         libxml2-devel \
         libxslt-devel \
+        python3-lxml \
         git \
         curl \
         wget \
