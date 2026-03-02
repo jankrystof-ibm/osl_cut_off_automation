@@ -13,7 +13,7 @@ THIS_SCRIPT_DIR="$(dirname $(realpath "$0"))"
 : "${ANSIBLE_DIR_HOST:=$THIS_SCRIPT_DIR/ansible}"
 : "${CONTAINER_IMAGE:=quay.io/rh-ee-jkrystof/osl_cut_off_automation:latest}"
 
-#echo aaaa
+echo aaaa
 ls -la $ANSIBLE_DIR_HOST
 docker run --rm -v $ANSIBLE_DIR_HOST:/tmp/x $CONTAINER_IMAGE ls -la /tmp/x
 
