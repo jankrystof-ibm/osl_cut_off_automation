@@ -61,5 +61,6 @@ docker run --rm \
 
     echo "Mounted clone directory:"
     cd /tmp/osl_cut_off_automation/ansible
+    ls -la
     ansible-playbook play__osl_cut_off.yml -e cloning_target_dir=/tmp/osl_cut_off_automation/OUT
   '
