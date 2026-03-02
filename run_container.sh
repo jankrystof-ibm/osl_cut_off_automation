@@ -46,7 +46,8 @@ ssh-keyscan github.com >> "$TMP_SSH_DIR/known_hosts" 2>/dev/null
 GIT_SSH_COMMAND="ssh -i $TMP_SSH_DIR/id_rsa -o UserKnownHostsFile=$TMP_SSH_DIR/known_hosts -o StrictHostKeyChecking=yes"
 
 
-
+echo xxx
+echo "${ANSIBLE_DIR_HOST}:/tmp/osl_cut_off_automation/ansible:ro"
 docker run --rm \
   -e GIT_SSH_COMMAND="$GIT_SSH_COMMAND" \
   -v "${TMP_SSH_DIR}:${TMP_SSH_DIR}:ro" \
@@ -63,11 +64,11 @@ docker run --rm \
 
     echo "Mounted clone directory:"
     cd /tmp/osl_cut_off_automation/ansible
-    echo CLONE_OUT_HOST $CLONE_OUT_HOST
-    ls -la $CLONE_OUT_HOST
+    echo ...OUT
+    ls -la /tmp/osl_cut_off_automation/OUT
 
-    echo ANSIBLE_DIR_HOST $ANSIBLE_DIR_HOST
-    ls -la $ANSIBLE_DIR_HOST
+    echo ..ansible
+    ls -la /tmp/osl_cut_off_automation/ansible
 
 
     ansible-playbook play__osl_cut_off.yml -e cloning_target_dir=/tmp/osl_cut_off_automation/OUT
