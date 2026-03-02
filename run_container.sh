@@ -52,23 +52,21 @@ docker run --rm \
   -v "${CLONE_OUT_HOST}:/tmp/osl_cut_off_automation/OUT" \
   -v "${ANSIBLE_DIR_HOST}:/tmp/osl_cut_off_automation/ansible:ro" \
   $CONTAINER_IMAGE \
-  ls -la /tmp/osl_cut_off_automation/ansible
-#  bash -c '
-#    set -euo pipefail
-#
-#    echo "Preparing SSH environment..."
-#    # Setup git identities
-#    git config --global user.name "pepa zdepa"
-#    git config --global user.email "pepa@z.depa"
-#
-#    echo "Mounted clone directory:"
-#    cd /tmp/osl_cut_off_automation/ansible
-#    echo ...OUT
-#    ls -la /tmp/osl_cut_off_automation/OUT
-#
-#    echo ..ansible
-#    ls -la /tmp/osl_cut_off_automation/ansible
-#
-#
-#    ansible-playbook play__osl_cut_off.yml -e cloning_target_dir=/tmp/osl_cut_off_automation/OUT
-#  '
+  bash -c '
+    set -euo pipefail
+
+    echo "Preparing SSH environment..."
+    # Setup git identities
+    git config --global user.name "pepa zdepa"
+    git config --global user.email "pepa@z.depa"
+
+    echo "Mounted clone directory:"
+    cd /tmp/osl_cut_off_automation/ansible
+    echo ...OUT
+    ls -la /tmp/osl_cut_off_automation/OUT
+
+    echo ..ansible
+    ls -la /tmp/osl_cut_off_automation/ansible
+
+    ansible-playbook play__osl_cut_off.yml -e cloning_target_dir=/tmp/osl_cut_off_automation/OUT
+  '
