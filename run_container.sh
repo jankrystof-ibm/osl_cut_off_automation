@@ -63,6 +63,12 @@ docker run --rm \
 
     echo "Mounted clone directory:"
     cd /tmp/osl_cut_off_automation/ansible
-    ls -la
+    echo (CLONE_OUT_HOST $CLONE_OUT_HOST)
+    ls -la $CLONE_OUT_HOST
+
+    echo (ANSIBLE_DIR_HOST $ANSIBLE_DIR_HOST)
+    ls -la $ANSIBLE_DIR_HOST
+
+
     ansible-playbook play__osl_cut_off.yml -e cloning_target_dir=/tmp/osl_cut_off_automation/OUT
   '
