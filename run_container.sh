@@ -45,7 +45,7 @@ chmod 600 "$TMP_SSH_DIR/id_rsa"
 ssh-keyscan github.com >> "$TMP_SSH_DIR/known_hosts" 2>/dev/null
 GIT_SSH_COMMAND="ssh -i $TMP_SSH_DIR/id_rsa -o UserKnownHostsFile=$TMP_SSH_DIR/known_hosts -o StrictHostKeyChecking=yes"
 
-export $ANSIBLE_DIR_HOST
+export ANSIBLE_DIR_HOST=$ANSIBLE_DIR_HOST
 echo xxx
 echo "${ANSIBLE_DIR_HOST}:/tmp/osl_cut_off_automation/ansible:ro"
 docker run --rm \
