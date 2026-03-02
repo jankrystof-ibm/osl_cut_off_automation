@@ -14,16 +14,16 @@
 
   roles:
 
-    - role: cut_off_products
-      vars:
-        product_repositories: "{{ cut_off_products.product_repositories }}"
-
-    - role: cut_off_kubesmarts_kie_tools
-      vars:
-        kogito_images_cekit_modules__quarkus_group_id: "{{ cut_off_kubesmarts_kie_tools.kogito_images_cekit_modules__quarkus_group_id }}"
-        quarkus_version: "{{ cut_off_kubesmarts_kie_tools.quarkus_version }}"
-        kie_tools_build__build_container_images: "{{ cut_off_kubesmarts_kie_tools.kie_tools_build__build_container_images }}"
-        kie_tool_repositories: "{{ cut_off_kubesmarts_kie_tools.kie_tool_repositories }}"
+  #    - role: cut_off_products
+#      vars:
+#        product_repositories: "{{ cut_off_products.product_repositories }}"
+#
+#    - role: cut_off_kubesmarts_kie_tools
+#      vars:
+#        kogito_images_cekit_modules__quarkus_group_id: "{{ cut_off_kubesmarts_kie_tools.kogito_images_cekit_modules__quarkus_group_id }}"
+#        quarkus_version: "{{ cut_off_kubesmarts_kie_tools.quarkus_version }}"
+#        kie_tools_build__build_container_images: "{{ cut_off_kubesmarts_kie_tools.kie_tools_build__build_container_images }}"
+#        kie_tool_repositories: "{{ cut_off_kubesmarts_kie_tools.kie_tool_repositories }}"
 
     - role: cut_off_kubesmarts_osl_images
       vars:
