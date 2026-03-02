@@ -14,7 +14,7 @@ THIS_SCRIPT_DIR="$(dirname $(realpath "$0"))"
 : "${CONTAINER_IMAGE:=quay.io/rh-ee-jkrystof/osl_cut_off_automation:latest}"
 
 #echo aaaa
-#ls -la $ANSIBLE_DIR_HOST
+ls -la $ANSIBLE_DIR_HOST
 docker run --rm -v $ANSIBLE_DIR_HOST:/tmp/x $CONTAINER_IMAGE ls -la /tmp/x
 
 #if [[ ! -d "$CLONE_OUT_HOST" ]]; then
