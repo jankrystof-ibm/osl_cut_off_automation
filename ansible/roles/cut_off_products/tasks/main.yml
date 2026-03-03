@@ -15,3 +15,11 @@
 
 - name: Update Maven build options - ensure productized profile
   include_tasks: update_maven_build_options.yml
+
+- name: Push branches to remote
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/push_repo.yml"
+  vars:
+    repository_folder_location:  "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+  loop: "{{ product_repositories }}"
+  loop_control:
+    label: "{{ item.midstream }}"

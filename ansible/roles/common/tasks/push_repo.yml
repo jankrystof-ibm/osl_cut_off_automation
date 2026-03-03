@@ -1,0 +1,20 @@
+#- debug:
+#    msg: "aaaaa {{ repository_folder_location }}"
+
+#- name: Check if local branch is ahead of remote
+#  ansible.builtin.command:
+#    cmd: "git cherry -v {{ branch_name }}"
+#    chdir: "{{ repository_folder_location }}"
+#  vars:
+#    repository_folder_location: "{{ cloning_target_dir }}/{{ repository_item.midstream | basename }}"
+#  register: git_ahead_check
+#  changed_when: false
+
+- name: Push to origin
+  ansible.builtin.command:
+    # Pushes current branch to its upstream tracking branch
+    cmd: git push origin HEAD
+    chdir: "{{ repository_folder_location }}"
+  # Only runs if 'git cherry' returned any lines (indicating unpushed commits)
+#  when: git_ahead_check.stdout != ""
+  register: push_result

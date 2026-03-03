@@ -60,12 +60,6 @@ docker run --rm \
   $CONTAINER_IMAGE \
   bash -c '
     set -euo pipefail
-    echo "HOME=$HOME"
-    echo "TMP_SSH_DIR=$HOME/.ssh"
-    ls -la "$HOME/.ssh"
-    git --version
-    # example git clone
-    echo aaa
     git config --global user.name "'"$GIT_USER_NAME"'"
     git config --global user.email "'$GIT_USER_EMAIL'"
     git config --global user.name

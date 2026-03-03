@@ -2,7 +2,7 @@ snapshot_version: "999-SNAPSHOT"
 product_version: "1.37.0"
 product_version_short: "1.37"
 kogito_version: "9.104.0"
-branch_name: "{{ 9.104 }}.x-prod"
+branch_name: "jkrystof_{{ 9.104 }}.x-prod"
 
 
 cut_off_products:
