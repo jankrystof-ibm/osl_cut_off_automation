@@ -4,12 +4,12 @@
     repositories: "{{ kie_tool_repositories }}"
 
 - name: Update all pom.xml files
-  include_tasks: "{{ playbook_dir }}/roles/common/tasks/update_pom_files_with_new_version.yml"
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/update_snapshot_version_in_pom_files_with_new_release_version.yml"
   vars:
     repositories: "{{ kie_tool_repositories }}"
 
-#- name: Update version in package.json files
-#  include_tasks: update_package_json_files_with_new_version.yml
+- name: Update version in package.json files
+  include_tasks: update_package_json_files_with_new_version.yml
 
 - name: Updates Kogito versions and repository references
   include_tasks: updates_kogito_versions.yml
@@ -31,7 +31,7 @@
 ##    repository_location: "{{ cloning_target_dir }}/{{ kie_tool_repositories[0].midstream | basename }}"
 
 - name: Update pom.xml file
-  include_tasks: "{{ playbook_dir }}/roles/common/tasks/update_pom_files_with_new_version.yml"
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/update_snapshot_version_in_pom_files_with_new_release_version.yml"
   vars:
     repositories: "{{ kie_tool_repositories }}"
 

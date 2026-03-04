@@ -1,0 +1,17 @@
+- name: Update versions in groovy script powering nightly pipeline
+  ansible.builtin.replace:
+    path: "{{ repository_location }}/{{ file_path }}"
+    regexp: '^(def {{ item.name }}\s*=\s*)(["''])([^"'']*)(\2)'
+    replace: '\g<1>\g<2>{{ item.value }}\g<2>'
+  loop:
+    - { name: "SERVERLESS_LOGIC_CURRENT_PRODUCT_VERSION", value: "{{ product_version }}" }
+    - { name: "SERVERLESS_LOGIC_KOGITO_CURRENT_PRODUCT_VERSION", value: "{{ kogito_version }}" }
+    - { name: "SERVERLESS_LOGIC_DROOLS_CURRENT_PRODUCT_VERSION", value: "{{ kogito_version }}" }
+    - { name: "SERVERLESS_LOGIC_CURRENT_PRODUCT_BRANCH", value: "{{ branch_name }}" }
+    - { name: "SERVERLESS_LOGIC_CURRENT_PRODUCT_CONFIG_BRANCH", value: "{{ product_config_branch_x }}" }
+
+- name: Commit - Update versions in groovy script powering nightly pipeline
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
+  vars:
+    repository_folder_location: "{{ repository_location }}"
+    commit_message: "Update nightly build configuration"

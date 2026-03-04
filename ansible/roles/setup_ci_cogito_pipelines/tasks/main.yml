@@ -1,0 +1,22 @@
+- name: Synchronize branches, sync optionally and create new release branches
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/clone_repositories_sync_optionally_and_checkout_release_branch.yml"
+  vars:
+    repositories:
+      - midstream: "{{ cogito_pipelines_repository }}"
+
+- name: Update nightly build configuration (what is built and how)
+  include_tasks: "update_nightly_build_configuration.yml"
+  vars:
+    repository_location: "{{ cloning_target_dir }}/{{ cogito_pipelines_repository | basename }}"
+    file_path: ".ci/nightly-build-config.yaml"
+
+- name: Update snapshot version in nightly Jenkins pipeline with new release version
+  include_tasks: "update_nightly_jenkins_pipeline.yml"
+  vars:
+    repository_location: "{{ cloning_target_dir }}/{{ cogito_pipelines_repository | basename }}"
+    file_path: ".ci/jenkins/Jenkinsfile.prod.nightly"
+
+- name: Push branches to remote
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/push_repo.yml"
+  vars:
+    repository_folder_location:  "{{ cloning_target_dir }}/{{ cogito_pipelines_repository | basename }}"

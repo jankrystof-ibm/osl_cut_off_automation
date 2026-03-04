@@ -1,0 +1,3 @@
+- name: Update snapshot version in specific files with new release version
+  ansible.builtin.shell: |
+    sed -i "s/{{ snapshot_version }}/{{ kogito_version }}/g" "{{base_dir}}/{{ target_file }}"

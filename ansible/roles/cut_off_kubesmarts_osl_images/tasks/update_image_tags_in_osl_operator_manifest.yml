@@ -1,5 +1,5 @@
   - name: Find all yaml files except excluded directories
-    find:
+    ansible.builtin.find:
       paths: "{{ repository_folder_location }}"
       patterns: "{{ file_name_pattern }}"
       recurse: yes
@@ -7,7 +7,7 @@
     register: yaml_files
 
   - name: Replace version string in yaml files
-    replace:
+    ansible.builtin.replace:
       path: "{{ item.path }}"
       regexp: "{{ to_find }}"
       replace: "{{ replacement }}"

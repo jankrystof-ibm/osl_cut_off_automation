@@ -1,5 +1,5 @@
 - name: Update environment variables (ci/osl/.env)
-  replace:
+  ansible.builtin.replace:
     path: "{{ repository_location }}/{{ file_path }}"
     regexp: "{{ item.the_regexp }}"
     replace: "{{ item.the_replace }}"

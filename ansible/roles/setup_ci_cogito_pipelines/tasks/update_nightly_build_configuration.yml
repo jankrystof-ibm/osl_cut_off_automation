@@ -1,0 +1,16 @@
+- name: Update nightly build configuration (what is built and how)
+  ansible.builtin.replace:
+    path: "{{ repository_location }}/{{ file_path }}"
+    regexp: "{{ item.the_regexp }}"
+    replace: "{{ item.the_replace }}"
+  loop:
+    - { "the_regexp": '^\s+e.+\s"?REMOVE_MODULES=.*\n?', "the_replace": "" } # Remove lines setting REMOVE_MODULES
+    - { "the_regexp": '\s*;\s*\$\{\{\s*env\.REMOVE_MODULES\s*\}\}\s*;?\s*', "the_replace": "" } # Remove a command for dropping modules i.e.='; ${{ env.REMOVE_MODULES }} ;'
+  loop_control:
+    loop_var: item
+
+- name: Commit - Update nightly build configuration (what is built and how)
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
+  vars:
+    repository_folder_location: "{{ repository_location }}"
+    commit_message: "Update nightly build configuration"

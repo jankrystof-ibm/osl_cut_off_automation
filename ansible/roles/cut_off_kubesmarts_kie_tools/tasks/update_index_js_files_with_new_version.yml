@@ -1,7 +1,7 @@
 # TODO: !!! KOGITO_RUNTIME_version - my comment 3.c in OSL Productization cut‐off process
 # TODO: !!! QUARKUS_PLATFORM_version - my comment 3.d in OSL Productization cut‐off process
 - name: Update index.js files OSL__branchName (3.a) + KIE_TOOLS_BUILD__streamName (3.b) + KOGITO_RUNTIME_version (3.c) + QUARKUS_PLATFORM_version???????
-  replace:
+  ansible.builtin.replace:
     path: "{{ repository_location }}/{{ file_path }}"
     regexp: "{{ item.the_regexp }}"
     replace: "{{ item.the_replace}}"

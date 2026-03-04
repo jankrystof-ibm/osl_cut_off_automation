@@ -1,9 +1,14 @@
+# use this for development and tuning while working in local development environment
+
+
 snapshot_version: "999-SNAPSHOT"
 product_version: "1.37.0"
 product_version_short: "1.37"
-kogito_version: "9.104.0"
-branch_name: "jkrystof_{{ 9.104 }}.x-prod"
-
+kogito_version_short: "9.104"
+kogito_version: "{{ kogito_version_short }}.0" # e.g. 9.104.0
+branch_name: "jkrystof_{{ kogito_version_short }}.x-prod"
+product_config_branch: "openshift-serverless-logic/{{ kogito_version }}" # e.g openshift-serverless-logic/9.104.0
+product_config_branch_x: "openshift-serverless-logic/{{ kogito_version_short }}.x" # e.g openshift-serverless-logic/9.104.x
 
 cut_off_products:
   product_repositories:
@@ -11,7 +16,6 @@ cut_off_products:
     - { midstream: "git@github.com:kiegroup/drools", upstream: "git@github.com:apache/incubator-kie-drools" }
     - { midstream: "git@github.com:kiegroup/kogito-examples", upstream: "git@github.com:apache/incubator-kie-kogito-examples" }
     - { midstream: "git@github.com:kiegroup/kogito-runtimes", upstream: "git@github.com:apache/incubator-kie-kogito-runtimes" }
-
 
 cut_off_kubesmarts_kie_tools:
   kogito_images_cekit_modules__quarkus_group_id: "com.redhat.quarkus.platform"
@@ -28,3 +32,12 @@ cut_off_kubesmarts_osl_images:
   osl_image_tag: "{{ product_version_short }}" # the `osl_image_tag` will replace occurrences of 999.0.0.main
   osl_images_repositories:
     - { midstream: "git@github.com:kubesmarts/osl-images" }
+
+setup_ci_cogito_pipelines:
+  repository: "git@github.com:kiegroup/kogito-pipelines.git"
+
+setup_ci_middleware_build_configuration:
+  repository: "git@gitlab.cee.redhat.com:middleware/build-configurations.git"
+
+setup_ci_kie_ci:
+  repository: "git@github.com:kiegroup/kie-ci.git"

@@ -38,8 +38,8 @@
         yq_selector: '.jobs.build-chain.steps[] | select(.name == "Build Chain").env' }
     - { location: "kogito-apps/.github/workflows/pr-downstream.yml",
         key: "env_BUILD_MVN_OPTS",
-        value: !unsafe '${{ matrix.env_BUILD_MVN_OPTS }}',
-        yq_selector: '.jobs.kogito-downstream-build.strategy.matrix.include[] | select(.job_name == "serverless-workflow-examples").env' }
+        value: "-Dproductized",
+        yq_selector: '.jobs.kogito-downstream-build.strategy.matrix.include[] | select(.job_name == "serverless-workflow-examples")' }
 
 - name: Commit - Update Maven build options (add productized profile)
   include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"

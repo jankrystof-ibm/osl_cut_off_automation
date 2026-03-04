@@ -1,0 +1,11 @@
+- name: Update build configuration - groovy instruction to reference new build branch in nightly builds
+  ansible.builtin.replace:
+    path: "{{ repository_location }}/{{ file_path }}"
+    regexp: '^(#!groovyScriptBase=https://gitlab\.cee\.redhat\.com/middleware/build-configurations/-/raw/)([^/]+)(/openshift-serverless-logic/nightly)$'
+    replace: '\1{{ branch_name }}\3'
+
+- name: Commit - Update build configuration - groovy instruction to reference new build branch in nightly builds
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
+  vars:
+    repository_folder_location: "{{ repository_location }}"
+    commit_message: "Update nightly build configuration"

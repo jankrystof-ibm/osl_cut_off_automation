@@ -11,6 +11,7 @@
     cloning_target_dir: "{{ playbook_dir }}/../OUT"
     # override via command line
     sync_with_upstream_enabled: false
+    enable_push_to_remote: false
 
   roles:
 
@@ -33,3 +34,15 @@
         git_reference_to_kubesmarts_kie_tools: "{{ cut_off_kubesmarts_osl_images.git_reference_to_kubesmarts_kie_tools }}"
         osl_image_tag: "{{ cut_off_kubesmarts_osl_images.osl_image_tag }}"
         osl_images_repositories: "{{ cut_off_kubesmarts_osl_images.osl_images_repositories }}"
+
+    - role: setup_ci_cogito_pipelines
+      vars:
+        cogito_pipelines_repository: "{{ setup_ci_cogito_pipelines.repository }}"
+
+    - role: setup_ci_middleware_build_configuration
+      vars:
+        middleware_build_configuration_repository: "{{ setup_ci_middleware_build_configuration.repository }}"
+
+    - role: setup_ci_kie_ci
+      vars:
+        kie_cie_repository: "{{ setup_ci_kie_ci.repository }}"

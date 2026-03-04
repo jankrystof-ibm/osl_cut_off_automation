@@ -8,7 +8,7 @@
   ansible.builtin.git:
     repo: "{{ item.midstream }}"
     dest: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
-    version: main
+    version: "{{ base_branch | default('main') }}"
     update: no
   loop: "{{ repositories }}"
   loop_control:
@@ -17,10 +17,12 @@
 - include_tasks: "{{ playbook_dir }}/roles/common/tasks/synchronize_branches.yml"
   when: sync_with_upstream_enabled | bool
 
-- name: Create and checkout new release branch from main
+- name: Create and checkout new release branch from given base branch main is default)
   ansible.builtin.command:
-    cmd: git checkout -B {{ branch_name }} main
+    cmd: git checkout -B {{ branch_name }} {{ version }}
     chdir: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+  vars:
+    version: "{{ base_branch | default('main') }}"
   loop: "{{ repositories }}"
   loop_control:
     label: "{{ item.midstream }}"

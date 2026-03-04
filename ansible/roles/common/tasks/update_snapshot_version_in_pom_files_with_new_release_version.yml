@@ -1,6 +1,6 @@
-- name: Update version pom.xml and README files
+- name: Update snapshot version in pom.xml files with new release version
   ansible.builtin.shell: |
-    find . \( -iname "pom.xml" -o -iname "README.md" \) -print0 | xargs -0 sed -i "s/>{{ snapshot_version }}</>{{ kogito_version }}</g"
+    find . -iname "pom.xml" -print0 | xargs -0 sed -i "s/>{{ snapshot_version }}</>{{ kogito_version }}</g"
   args:
     chdir: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
   loop: "{{ repositories }}"
@@ -12,11 +12,11 @@
 # - neither now
 # - or later in the CI after commit + push
 
-- name: Commit - Update version pom.xml and README files
+- name: Commit - Update snapshot version in pom.xml files with new release version
   include_tasks: commit_changes_if_any.yml
   vars:
     repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
-    commit_message: "Update version in pom.xml files"
+    commit_message: "Update snapshot version in pom.xml files with new release version"
   loop: "{{ repositories }}"
   loop_control:
     label: "{{ item.midstream }}"

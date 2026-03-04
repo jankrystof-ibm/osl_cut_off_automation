@@ -1,0 +1,19 @@
+- name: Synchronize branches, sync optionally and create new release branches
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/clone_repositories_sync_optionally_and_checkout_release_branch.yml"
+  vars:
+    base_branch: "master"
+    branch_name: "{{ product_config_branch }}"
+    repositories:
+      - midstream: "{{ middleware_build_configuration_repository }}"
+
+- name: Update build configuration - groovy directive - to reference new release branch in nightly builds
+  include_tasks: "update_groovy_directive_to_reference_new_release_branch.yml"
+  vars:
+    file_path: "openshift-serverless-logic/nightly/build-config.yaml"
+    repository_location: "{{ cloning_target_dir }}/{{ middleware_build_configuration_repository | basename }}"
+    branch_name: "{{ product_config_branch }}"
+
+- name: Push branches to remote
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/push_repo.yml"
+  vars:
+    repository_folder_location:  "{{ cloning_target_dir }}/{{ middleware_build_configuration_repository | basename }}"

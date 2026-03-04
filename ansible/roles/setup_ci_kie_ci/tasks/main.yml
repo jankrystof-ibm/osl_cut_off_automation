@@ -1,0 +1,16 @@
+- name: Synchronize branches, sync optionally and create new release branches
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/clone_repositories_sync_optionally_and_checkout_release_branch.yml"
+  vars:
+    repositories:
+      - midstream: "{{ kie_cie_repository }}"
+
+- name: Update groovy script powering nightly pipeline
+  include_tasks: "update_groovy_scripts_with_new_version.yml"
+  vars:
+    file_path: "job-dsls/jobs/prod/prod_cron_meta_nightly_pipeline.groovy"
+    repository_location: "{{ cloning_target_dir }}/{{ kie_cie_repository | basename }}"
+
+- name: Push branches to remote
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/push_repo.yml"
+  vars:
+    repository_folder_location:  "{{ cloning_target_dir }}/{{ kie_cie_repository | basename }}"

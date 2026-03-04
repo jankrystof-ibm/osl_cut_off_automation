@@ -1,0 +1,14 @@
+- name: Update snapshot version in nightly Jenkins pipeline with new release version
+  ansible.builtin.replace:
+    path: "{{ repository_location }}/{{ file_path }}"
+    regexp: "{{ item.the_regexp }}"
+    replace: "{{ item.the_replace }}"
+  loop:
+    - { "the_regexp": "{{ snapshot_version }}", "the_replace": "{{ kogito_version }}" } # replace
+    - { "the_regexp": '^(?!\s*#)(.*999\.0\.0\.nightly.*)$', "the_replace": '# \1' } # comment it out
+
+- name: Commit - Update snapshot version in nightly Jenkins pipeline with new release version
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
+  vars:
+    repository_folder_location: "{{ repository_location }}"
+    commit_message: "Update nightly build configuration"
