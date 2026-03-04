@@ -11,7 +11,7 @@
     cloning_target_dir: "{{ playbook_dir }}/../OUT"
     # override via command line
     sync_with_upstream_enabled: false
-    enable_push_to_remote: false
+    enable_push_to_remote: true
 
   roles:
 

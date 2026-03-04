@@ -2,9 +2,9 @@
 
 
 snapshot_version: "999-SNAPSHOT"
-product_version: "1.37.0"
-product_version_short: "1.37"
-kogito_version_short: "9.104"
+product_version: "1.38.0"
+product_version_short: "1.38"
+kogito_version_short: "9.105"
 kogito_version: "{{ kogito_version_short }}.0" # e.g. 9.104.0
 branch_name: "jkrystof_{{ kogito_version_short }}.x-prod"
 product_config_branch: "openshift-serverless-logic/{{ kogito_version }}" # e.g openshift-serverless-logic/9.104.0
