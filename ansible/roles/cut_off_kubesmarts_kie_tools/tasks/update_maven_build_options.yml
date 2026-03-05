@@ -13,9 +13,9 @@
     value: "{{ item.value }}"
   loop:
     - { location: "kie-tools/.github/actions/setup-maven-cache/action.yml",
-        key: "env.MAVEN_OPTIONS",
+        key: "MAVEN_OPTIONS",
         value: "-Dproductized",
-        yq_selector_path: '.runs.steps[] | select(.name=="Clone and Build Drools, Runtimes and Apps repositories")'
+        yq_selector_path: '.runs.steps[] | select(.name=="Clone and Build Drools, Runtimes and Apps repositories").env'
     }
 
 - name: Commit - Update Maven build options (add productized profile)
