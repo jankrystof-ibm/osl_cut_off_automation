@@ -42,7 +42,9 @@ chmod 700 "$TMP_SSH_DIR"
 cp "$SSH_KEY_LOCATION" "$TMP_SSH_DIR/id_rsa"
 chmod 600 "$TMP_SSH_DIR/id_rsa"
 
-ssh-keyscan github.com > "$TMP_SSH_DIR/known_hosts" 2>/dev/null
+ssh-keyscan github.com > "$TMP_SSH_DIR/known_hosts"
+ssh-keyscan gitlab.cee.redhat.com >> "$TMP_SSH_DIR/known_hosts"
+
 chmod 644 "$TMP_SSH_DIR/known_hosts"
 
 GIT_SSH_COMMAND="ssh -i $TMP_SSH_DIR/id_rsa -o UserKnownHostsFile=$TMP_SSH_DIR/known_hosts -o StrictHostKeyChecking=yes"

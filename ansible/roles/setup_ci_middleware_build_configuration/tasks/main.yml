@@ -2,7 +2,7 @@
   include_tasks: "{{ playbook_dir }}/roles/common/tasks/clone_repositories_sync_optionally_and_checkout_release_branch.yml"
   vars:
     base_branch: "master"
-    branch_name: "{{ product_config_branch }}"
+    branch_name: "{{ product_config_branch_x }}"
     repositories:
       - midstream: "{{ middleware_build_configuration_repository }}"
 
@@ -11,7 +11,7 @@
   vars:
     file_path: "openshift-serverless-logic/nightly/build-config.yaml"
     repository_location: "{{ cloning_target_dir }}/{{ middleware_build_configuration_repository | basename }}"
-    branch_name: "{{ product_config_branch }}"
+    branch_name: "{{ product_config_branch_x }}"
 
 - name: Push branches to remote
   include_tasks: "{{ playbook_dir }}/roles/common/tasks/push_repo.yml"
