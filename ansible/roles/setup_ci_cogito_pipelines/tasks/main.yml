@@ -8,7 +8,11 @@
   include_tasks: "update_nightly_build_configuration.yml"
   vars:
     repository_location: "{{ cloning_target_dir }}/{{ cogito_pipelines_repository | basename }}"
-    file_path: ".ci/nightly-build-config.yaml"
+  loop:
+    - { file_path: ".ci/nightly-build-config.yaml" }
+    - { file_path: ".ci/pull-request-config.yaml" }
+  loop_control:
+      loop_var: outer
 
 - name: Update snapshot version in nightly Jenkins pipeline with new release version
   include_tasks: "update_nightly_jenkins_pipeline.yml"

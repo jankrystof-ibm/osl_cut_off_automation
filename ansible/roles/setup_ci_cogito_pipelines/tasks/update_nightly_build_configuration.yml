@@ -1,13 +1,17 @@
 - name: Update nightly build configuration (what is built and how)
   ansible.builtin.replace:
-    path: "{{ repository_location }}/{{ file_path }}"
+    path: "{{ repository_location }}/{{ outer.file_path }}"
     regexp: "{{ item.the_regexp }}"
     replace: "{{ item.the_replace }}"
+  vars:
+    match_echo_REMOVE_MODULES: '^[ \t]*echo.*REMOVE_MODULES.*\n?'
+    match_export_REMOVE_MODULES: '^[ \t]*export REMOVE_MODULES=.*\n?'
+    match_command_REMOVE_MODULES: '\$\{\{\s*env\.REMOVE_MODULES\s*\}\}[ \t]*' # remove ${{ env.REMOVE_MODULES }}
   loop:
-    - { "the_regexp": '^\s+e.+\s"?REMOVE_MODULES=.*\n?', "the_replace": "" } # Remove lines setting REMOVE_MODULES
-    - { "the_regexp": '\s*;\s*\$\{\{\s*env\.REMOVE_MODULES\s*\}\}\s*;?\s*', "the_replace": "" } # Remove a command for dropping modules i.e.='; ${{ env.REMOVE_MODULES }} ;'
-  loop_control:
-    loop_var: item
+    - { the_regexp: "{{ match_echo_REMOVE_MODULES }}", the_replace: "" }
+    - { the_regexp: "{{ match_export_REMOVE_MODULES }}", the_replace: "" }
+    - { the_regexp: "{{ match_command_REMOVE_MODULES }}", the_replace: "" }
+
 
 - name: Commit - Update nightly build configuration (what is built and how)
   include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
