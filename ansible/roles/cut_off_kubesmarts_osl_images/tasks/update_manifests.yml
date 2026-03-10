@@ -16,24 +16,24 @@
   changed_when: "'Appending' in update_result.stdout"
   check_mode: no
   vars:
-    file_location: "{{ repository_folder_location }}/{{ item.location }}"
+    file_location: "{{ repository_folder_location }}/{{ item.file_path }}"
     selector: "{{ item.yq_selector_path }}"
     property: '{{ item.property }}'
     script_file: "{{ role_path }}/../common/files/yaml_update__ensure_key_and_vaue_exist.sh"
     key: "{{ item.key }}"
     value: "{{ item.value }}"
   loop:
-    - { location: "osl-operator-image/logic-{{ rhel_platform }}-operator-image.yaml",
+    - { file_path: "osl-operator-image/logic-{{ rhel_platform }}-operator-image.yaml",
         key: "ref",
         value: "{{ kie_tools_repository_head_ref }}",
         yq_selector_path: '.[0].osbs.configuration.container.remote_source'
     }
-    - { location: "osl-operator-image/logic-{{ rhel_platform }}-operator-image.yaml",
+    - { file_path: "osl-operator-image/logic-{{ rhel_platform }}-operator-image.yaml",
         key: "branch",
         value: "{{ osbs_repository_branch }}",
         yq_selector_path: '.[] | select(.name == "openshift-serverless-1/logic-{{ rhel_platform }}-operator") | .osbs.repository'
     }
-    - { location: "osl-cli-artifacts-image/logic-kn-workflow-cli-artifacts-{{ rhel_platform }}-image.yaml",
+    - { file_path: "osl-cli-artifacts-image/logic-kn-workflow-cli-artifacts-{{ rhel_platform }}-image.yaml",
         key: "branch",
         value: "{{ osbs_repository_branch }}",
         yq_selector_path: '.[] | select(.name == "openshift-serverless-1/logic-kn-workflow-cli-artifacts-{{ rhel_platform }}") | .osbs.repository'

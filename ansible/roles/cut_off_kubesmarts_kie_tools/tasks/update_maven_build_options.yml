@@ -6,13 +6,13 @@
   changed_when: "'Appending' in update_result.stdout"
   check_mode: no
   vars:
-    workflow_file: "{{ cloning_target_dir }}/{{ item.location }}"
+    workflow_file: "{{ cloning_target_dir }}/{{ item.file_path }}"
     selector: '{{ item.yq_selector_path }}'
     script_file: "{{ role_path }}/../common/files/yaml_update__create_key_or_extend_existing_one.sh"
     key: "{{ item.key }}"
     value: "{{ item.value }}"
   loop:
-    - { location: "kie-tools/.github/actions/setup-maven-cache/action.yml",
+    - { file_path: "kie-tools/.github/actions/setup-maven-cache/action.yml",
         key: "MAVEN_OPTIONS",
         value: "-Dproductized",
         yq_selector_path: '.runs.steps[] | select(.name=="Clone and Build Drools, Runtimes and Apps repositories").env'
