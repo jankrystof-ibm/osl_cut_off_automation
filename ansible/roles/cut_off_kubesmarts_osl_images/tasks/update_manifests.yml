@@ -1,3 +1,13 @@
+- name: Determine SHA1 of the respective HEAD in the kie tools repository
+  ansible.builtin.shell:
+    # -q v grepu zajistí, že hledáme přesnou shodu pro HEAD na konci řádku
+    git ls-remote {{ kie_tools_repository }} HEAD | awk '{print $1}'
+  register: kie_tools_repository_head_ref_result
+
+- ansible.builtin.set_fact:
+    # reference (i.e. commit) to source code of kubesmarts/kie-tools (update rhel operator image)
+    kie_tools_repository_head_ref: "{{ kie_tools_repository_head_ref_result.stdout | trim }}"
+
 - name: Update manifests - 1) branch names for OSBS and 2) reference to source code of kubesmarts/kie-tools
   ansible.builtin.command:
     cmd: >
@@ -15,7 +25,7 @@
   loop:
     - { location: "osl-operator-image/logic-{{ rhel_platform }}-operator-image.yaml",
         key: "ref",
-        value: "{{ git_reference_to_kubesmarts_kie_tools }}",
+        value: "{{ kie_tools_repository_head_ref }}",
         yq_selector_path: '.[0].osbs.configuration.container.remote_source'
     }
     - { location: "osl-operator-image/logic-{{ rhel_platform }}-operator-image.yaml",

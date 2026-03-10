@@ -15,7 +15,7 @@ cut_off_products:
 
 cut_off_kubesmarts_kie_tools:
   kogito_images_cekit_modules__quarkus_group_id: "com.redhat.quarkus.platform"
-  quarkus_version: '${QUARKUS_VERSION:3.20.1}' # The quarkus version is clarified while CUT off starts. We should take the latest version available from RHBQ releases
+  quarkus_version: '${QUARKUS_VERSION:3.27.2}' # The quarkus version is clarified while CUT off starts. We should take the latest version available from RHBQ releases
   kie_tools_build__build_container_images: "false"
   kie_tool_repositories:
     - { midstream: "git@github.com:kubesmarts/kie-tools", upstream: "git@github.com:apache/incubator-kie-tools" }
@@ -24,7 +24,6 @@ cut_off_kubesmarts_osl_images:
   rhel_version: 9
   rhel_platform: "rhel{{rhel_version}}"
   osbs_repository_branch: "update me" # e.g. openshift-serverless-1.37-rhel-9
-  git_reference_to_kubesmarts_kie_tools: "update me" # reference (i.e. commit) to source code of kubesmarts/kie-tools (update rhel operator image)
   osl_image_tag: "{{ product_version_short }}" # the `osl_image_tag` will replace occurrences of 999.0.0.main
   osl_images_repositories:
     - { midstream: "git@github.com:kubesmarts/osl-images" }

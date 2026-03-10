@@ -31,9 +31,9 @@
         rhel_version: "{{ cut_off_kubesmarts_osl_images.rhel_version }}"
         rhel_platform: "{{ cut_off_kubesmarts_osl_images.rhel_platform }}"
         osbs_repository_branch: "{{ cut_off_kubesmarts_osl_images.osbs_repository_branch }}"
-        git_reference_to_kubesmarts_kie_tools: "{{ cut_off_kubesmarts_osl_images.git_reference_to_kubesmarts_kie_tools }}"
         osl_image_tag: "{{ cut_off_kubesmarts_osl_images.osl_image_tag }}"
         osl_images_repositories: "{{ cut_off_kubesmarts_osl_images.osl_images_repositories }}"
+        kie_tools_repository: "{{ cut_off_kubesmarts_kie_tools.kie_tool_repositories[0].midstream_https }}"
 
     - role: setup_ci_cogito_pipelines
       vars:
