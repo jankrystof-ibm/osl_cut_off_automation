@@ -12,7 +12,16 @@ Steps
 
 # Run the playbook
 
+## run from container
 
+make sure that the identity key SSH_KEY_LOCATION provides access to both gitlab and gitlab.cee.redhat.com repositories
+```
+export CLONE_OUT_HOST=...   # $(mktemp -d)
+export SSH_KEY_LOCATION=... # ...
+.run_container
+```
+
+## run from bare host
 Go with default settings (no much usable within a CI)
 ```
 ansible-playbook play__osl_cut_off.yml
