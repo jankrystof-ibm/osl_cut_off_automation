@@ -23,6 +23,11 @@
   vars:
     repository_folder_location: "{{ cloning_target_dir}}/{{ osl_images_repositories[0].midstream | basename }}"
 
+- name: Update kogito project versions
+  include_tasks: update_kogito_project_versions.yml
+  vars:
+    repository_folder_location: "{{ cloning_target_dir}}/{{ osl_images_repositories[0].midstream | basename }}"
+
 - name: Push branches to remote
   include_tasks: "{{ playbook_dir }}/roles/common/tasks/push_repo.yml"
   vars:

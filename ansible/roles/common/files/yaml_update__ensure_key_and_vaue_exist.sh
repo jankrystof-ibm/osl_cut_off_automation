@@ -27,10 +27,18 @@ set -euo pipefail
 #   and mark the task as "changed".
 
 FILE_LOCATION="${1:?Specify workflow file}"
+# when selector is not needed, pass '-'
 SELECTOR="${2:?Specify yq selector}"
 KEY="${3:?Specify key to setup}"
 VALUE="${4:?Specify value for the key}"
 
+
+if [ "$SELECTOR" == "-" ]; then
+  KEY="$KEY" VALUE="$VALUE" yq -i '.[strenv(KEY)] = env(VALUE)' "$FILE_LOCATION"
+  CHANGED_MSG="Appending ${VALUE}"
+  echo "$CHANGED_MSG"
+  exit 0
+fi
 CURRENT_VALUE=$(yq eval "(${SELECTOR}).${KEY} // \"\"" "$FILE_LOCATION")
 
 if [ "$CURRENT_VALUE" != "$VALUE" ]; then

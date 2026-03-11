@@ -9,6 +9,9 @@ kogito_version: "{{ kogito_version_short }}.0" # e.g. 9.104.0
 branch_name: "{{ kogito_version_short }}.x-prod"
 product_config_branch: "openshift-serverless-logic/{{ kogito_version }}" # e.g openshift-serverless-logic/9.104.0
 product_config_branch_x: "openshift-serverless-logic/{{ kogito_version_short }}.x" # e.g openshift-serverless-logic/9.104.x
+quarkus_version: "3.27.2" # The quarkus version is clarified while CUT off starts. We should take the latest version available from RHBQ releases
+quarkus_platform_version: "3.27.2"
+quarkus_group_id: "com.redhat.quarkus.platform"
 
 cut_off_products:
   product_repositories:
@@ -18,9 +21,6 @@ cut_off_products:
     - { midstream: "git@github.com:kiegroup/kogito-runtimes", upstream: "git@github.com:apache/incubator-kie-kogito-runtimes" }
 
 cut_off_kubesmarts_kie_tools:
-  kogito_images_cekit_modules__quarkus_group_id: "com.redhat.quarkus.platform"
-  quarkus_version: '${QUARKUS_VERSION:3.27.2}' # The quarkus version is clarified while CUT off starts. We should take the latest version available from RHBQ releases
-  quarkus_platform_version: '${QUARKUS_PLATFORM_VERSION:3.27.2}'
   kie_tools_build__build_container_images: "false"
   kie_tool_repositories:
     - { midstream: "git@github.com:kubesmarts/kie-tools", upstream: "git@github.com:apache/incubator-kie-tools", midstream_https: "https://github.com/kubesmarts/kie-tools" }

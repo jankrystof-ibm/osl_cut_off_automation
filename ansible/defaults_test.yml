@@ -1,9 +1,15 @@
-snapshot_version: "aaaaaaaaaaa"
-product_version: "1.37.0"
-product_version_short: "1.37"
-kogito_version: "9.104.0"
-branch_name: "{{ 9.104 }}.x-prod"
-
+# use this for development and tuning while working in local development environment
+snapshot_version: "999-SNAPSHOT"
+product_version: "0.38.0"
+product_version_short: "0.38"
+kogito_version_short: "8.105"
+kogito_version: "{{ kogito_version_short }}.0" # e.g. 8.104.0
+branch_name: "{{ kogito_version_short }}.x-prod"
+product_config_branch: "openshift-serverless-logic/{{ kogito_version }}" # e.g openshift-serverless-logic/8.104.0
+product_config_branch_x: "openshift-serverless-logic/{{ kogito_version_short }}.x" # e.g openshift-serverless-logic/8.104.x
+quarkus_version: "2.27.2" # The quarkus version is clarified while CUT off starts. We should take the latest version available from RHBQ releases
+quarkus_platform_version: "2.27.2"
+quarkus_group_id: "com.redhat.quarkus.platform"
 
 cut_off_products:
   product_repositories:
@@ -12,19 +18,24 @@ cut_off_products:
     - { midstream: "git@github.com:kiegroup/kogito-examples", upstream: "git@github.com:apache/incubator-kie-kogito-examples" }
     - { midstream: "git@github.com:kiegroup/kogito-runtimes", upstream: "git@github.com:apache/incubator-kie-kogito-runtimes" }
 
-
 cut_off_kubesmarts_kie_tools:
-  kogito_images_cekit_modules__quarkus_group_id: "com.redhat.quarkus.platform"
-  quarkus_version: '${QUARKUS_VERSION:3.27.2}' # The quarkus version is clarified while CUT off starts. We should take the latest version available from RHBQ releases
-  quarkus_platform_version: '${QUARKUS_PLATFORM_VERSION:3.27.2}'
   kie_tools_build__build_container_images: "false"
   kie_tool_repositories:
-    - { midstream: "git@github.com:kubesmarts/kie-tools", upstream: "git@github.com:apache/incubator-kie-tools" }
+    - { midstream: "git@github.com:kubesmarts/kie-tools", upstream: "git@github.com:apache/incubator-kie-tools", midstream_https: "https://github.com/kubesmarts/kie-tools" }
 
 cut_off_kubesmarts_osl_images:
   rhel_version: 9
-  rhel_platform: "rhel{{rhel_version}}"
-  osbs_repository_branch: "update me" # e.g. openshift-serverless-1.37-rhel-9
+  rhel_platform: "rhel9"
+  osbs_repository_branch: "openshift-serverless-0.38-rhel-9" # e.g. openshift-serverless-1.37-rhel-9
   osl_image_tag: "{{ product_version_short }}" # the `osl_image_tag` will replace occurrences of 999.0.0.main
   osl_images_repositories:
     - { midstream: "git@github.com:kubesmarts/osl-images" }
+
+setup_ci_cogito_pipelines:
+  repository: "git@github.com:kiegroup/kogito-pipelines.git"
+
+setup_ci_middleware_build_configuration:
+  repository: "git@gitlab.cee.redhat.com:middleware/build-configurations.git"
+
+setup_ci_kie_ci:
+  repository: "git@github.com:kiegroup/kie-ci.git"
