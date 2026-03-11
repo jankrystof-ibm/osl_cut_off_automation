@@ -8,7 +8,7 @@
     # reference (i.e. commit) to source code of kubesmarts/kie-tools (update rhel operator image)
     kie_tools_repository_head_ref: "{{ kie_tools_repository_head_ref_result.stdout | trim }}"
 
-- name: Update manifests - 1) branch names for OSBS and 2) reference to source code of kubesmarts/kie-tools
+- name: Update manifests of the operator image - 1) branch names for OSBS and 2) reference to source code of kubesmarts/kie-tools
   ansible.builtin.command:
     cmd: >
       bash {{ script_file }} '{{ file_location }}' '{{ selector }}' {{ key }} '{{ value }}'
