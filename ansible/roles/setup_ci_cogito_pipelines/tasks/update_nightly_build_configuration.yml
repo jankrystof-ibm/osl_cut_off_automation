@@ -6,11 +6,13 @@
   vars:
     match_echo_REMOVE_MODULES: '^[ \t]*echo.*REMOVE_MODULES.*\n?'
     match_export_REMOVE_MODULES: '^[ \t]*export REMOVE_MODULES=.*\n?'
-    match_command_REMOVE_MODULES: '\$\{\{\s*env\.REMOVE_MODULES\s*\}\}[ \t]*' # remove ${{ env.REMOVE_MODULES }}
+    match_command_REMOVE_MODULES_1: '\$\{\{ env\.REMOVE_MODULES \}\}\s*;'
+    match_command_REMOVE_MODULES_2: '^\s*\$\{\{ env\.REMOVE_MODULES \}\}\s*\n'
   loop:
     - { the_regexp: "{{ match_echo_REMOVE_MODULES }}", the_replace: "" }
     - { the_regexp: "{{ match_export_REMOVE_MODULES }}", the_replace: "" }
-    - { the_regexp: "{{ match_command_REMOVE_MODULES }}", the_replace: "" }
+    - { the_regexp: "{{ match_command_REMOVE_MODULES_1 }}", the_replace: "" }
+    - { the_regexp: "{{ match_command_REMOVE_MODULES_2 }}", the_replace: "" }
 
 
 - name: Commit - Update nightly build configuration (what is built and how)
