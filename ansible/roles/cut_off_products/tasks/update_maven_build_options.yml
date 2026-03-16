@@ -27,7 +27,7 @@
     - { file_path: "kogito-runtimes/.github/workflows/pr-downstream.yml",
         key: "env_BUILD_MVN_OPTS",
         value: "-Dproductized",
-        yq_selector: '.jobs.kogito-downstream-build.strategy.matrix.include[] | select(.job_name == "kogito-apps").env' }
+        yq_selector: '.jobs.kogito-downstream-build.strategy.matrix.include[] | select(.job_name == "kogito-apps")' }
     - { file_path: "kogito-runtimes/.github/workflows/pr-kogito-runtimes.yml",
         key: "BUILD_MVN_OPTS",
         value: "-Dproductized",
