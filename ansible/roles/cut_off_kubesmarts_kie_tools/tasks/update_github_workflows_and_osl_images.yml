@@ -43,8 +43,17 @@
         value: "{{ kogito_version }}",
         yq_selector_path: '.env'
     }
-#### TODO: perhaps kie-tools/.github/workflows/ci_build.yml
-#
+    - { file_path: "kie-tools/.github/workflows/ci_build.yml",
+        key: "with.DEPS_BRANCHNAME",
+        value: "{{ branch_name }}",
+        yq_selector_path: '.jobs.run.steps[] | select(.name=="Setup local maven cache")'
+    }
+    - { file_path: "kie-tools/.github/workflows/ci_build.yml",
+        key: "KOGITO_RUNTIME_version",
+        value: "{{ kogito_version }}",
+        yq_selector_path: '.env'
+    }
+
 - name: Commit - Updates github workflows and osl images
   include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
   vars:
