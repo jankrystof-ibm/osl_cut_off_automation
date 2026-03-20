@@ -1,0 +1,38 @@
+---
+- name: OSL cut-off - supporting tasks - clone remote branches
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - "{{ vars_location | default('defaults.yml') }}"
+
+  vars:
+    # override via command line
+    #release_branch: "9.105.x-prod"
+    release_branch: "main"
+    config_branch: "openshift-serverless-logic/9.105.x"
+    #repo_out: "{{ playbook_dir }}/../REMOTES_OUT"
+    repo_out: "/home/jkrystof/devel/projects/osl_cut_off_automation/midstream"
+    remotes:
+      - { repository: "git@github.com:kiegroup/kogito-runtimes", branch_name: "{{ release_branch }}" }
+      - { repository: "git@github.com:kiegroup/kogito-examples", branch_name: "{{ release_branch }}" }
+      - { repository: "git@github.com:kiegroup/kogito-apps", branch_name: "{{ release_branch }}" }
+      - { repository: "git@github.com:kiegroup/drools", branch_name: "{{ release_branch }}" }
+      - { repository: "git@github.com:kubesmarts/kie-tools", branch_name: "{{ release_branch }}" }
+      - { repository: "git@github.com:kubesmarts/osl-images", branch_name: "{{ release_branch }}" }
+      - { repository: "git@github.com:kiegroup/kogito-pipelines.git", branch_name: "{{ release_branch }}" }
+      - { repository: "git@github.com:kiegroup/github-action-build-chain", branch_name: "{{ release_branch }}" }
+      - { repository: "git@github.com:kiegroup/kie-ci.git", branch_name: "{{ release_branch }}" }
+      - { repository: "git@gitlab.cee.redhat.com:middleware/build-configurations.git", branch_name: "{{ config_branch }}" }
+
+  tasks:
+
+    - name: Checkout remotes
+      ansible.builtin.git:
+        repo: "{{ item.repository }}"
+        version: "{{ item.branch_name }}"
+        dest: "{{ repo_out }}/{{ item.repository | basename | regex_replace('\\.git$', '') }}"
+        accept_hostkey: yes
+        force: yes
+      loop: "{{ remotes }}"
+      register: git_checkout_results

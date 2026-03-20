@@ -1,0 +1,46 @@
+---
+- name: OSL cut-off - supporting tasks - remove remote branches
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - "{{ vars_location | default('defaults.yml') }}"
+
+  vars:
+    # override via command line
+    release_branch: "9.105.x-prod"
+    config_branch: "openshift-serverless-logic/9.105.x"
+    remotes:
+      - { repository: "git@github.com:kiegroup/kogito-runtimes", branch_name: "{{ release_branch }}" }
+      - { repository: "git@github.com:kiegroup/kogito-examples", branch_name: "{{ release_branch }}" }
+      - { repository: "git@github.com:kiegroup/kogito-apps", branch_name: "{{ release_branch }}" }
+      - { repository: "git@github.com:kiegroup/drools", branch_name: "{{ release_branch }}" }
+      - { repository: "git@github.com:kubesmarts/kie-tools", branch_name: "{{ release_branch }}" }
+      - { repository: "git@github.com:kubesmarts/osl-images", branch_name: "{{ release_branch }}" }
+      - { repository: "git@github.com:kiegroup/kogito-pipelines.git", branch_name: "{{ release_branch }}" }
+      - { repository: "git@github.com:kiegroup/kie-ci.git", branch_name: "{{ release_branch }}" }
+      - { repository: "git@gitlab.cee.redhat.com:middleware/build-configurations.git", branch_name: "{{ config_branch }}" }
+
+  tasks:
+
+  block:
+    - name: Remove remote branches
+      ansible.builtin.command:
+        cmd: "git push {{ item.repository }} --delete {{ item.branch_name }}"
+      loop: "{{ remotes }}"
+      register: git_push_results
+      ignore_errors: yes
+      failed_when: false
+      loop_control:
+        label: "Repo: {{ item.repository | basename }} | Branch: {{ item.branch_name }}"
+
+    - name: Validace výsledků smazání (Robustní kontrola)
+      ansible.builtin.fail:
+        msg: "Removal failed {{ item.item.repository }}"
+      loop: "{{ git_push_results.results }}"
+      when:
+        - item.rc != 0
+        - "'remote ref does not exist' not in item.stderr"
+      loop_control:
+        label: "Check: {{ item.item.repository | basename }}"
+  when: deletion_enabled | default(false) | bool
