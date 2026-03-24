@@ -1,18 +1,22 @@
+- ansible.builtin.set_fact:
+    file_path: "packages/root-env/env/index.js"
+
 - name: Update index.js files OSL__branchName (3.a) + KIE_TOOLS_BUILD__streamName (3.b) + KOGITO_RUNTIME_version (3.c) + QUARKUS_PLATFORM
   ansible.builtin.replace:
     path: "{{ repository_location }}/{{ file_path }}"
     regexp: "{{ item.the_regexp }}"
     replace: "{{ item.the_replace}}"
-  vars:
-    file_path: "packages/root-env/env/index.js"
   loop:
-    - { file_path: "packages/redhat-env/env/index.js", "the_regexp": 'default:\s*"[^"]*"', "the_replace": 'default: "{{ product_version_short }}"' }
-    - { file_path: "packages/root-env/env/index.js", "the_regexp": '(\s*KIE_TOOLS_BUILD__streamName:\s*{\s*default:\s*")[^"]+(")', "the_replace": '\g<1>{{ product_version }}\g<2>' }
-    - { file_path: "packages/root-env/env/index.js", "the_regexp": '(\s*KOGITO_RUNTIME_version:\s*{\s*default:\s*")[^"]+(")', "the_replace": '\g<1>{{ kogito_version }}\g<2>' }
+    - { the_regexp: 'default:\s*"[^"]*"', the_replace: 'default: "{{ product_version_short }}"' }
+    - { the_regexp: '(\s*KIE_TOOLS_BUILD__streamName:\s*{\s*default:\s*")[^"]+(")', the_replace: '\g<1>{{ product_version }}\g<2>' }
+    - { the_regexp: '(\s*KOGITO_RUNTIME_version:\s*{\s*default:\s*")[^"]+(")', the_replace: '\g<1>{{ kogito_version }}\g<2>' }
+    - { the_regexp: '(\s*QUARKUS_PLATFORM_version:\s*{\s*default:\s*")[^"]+(")', the_replace: '\g<1>{{ quarkus_platform_version }}\g<2>' }
   loop_control:
     loop_var: item
 
-# TODO: JS validation here
+- name: Validate updates of the index.js
+  ansible.builtin.command:
+    cmd: "npx acorn {{ repository_location }}/{{ file_path }}"
 
 - name: Commit - Update index.js files
   include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"

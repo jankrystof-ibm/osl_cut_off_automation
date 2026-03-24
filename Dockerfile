@@ -24,7 +24,7 @@ RUN dnf -y update && \
     dnf clean all
 
 # Install pnpm globally
-RUN npm install -g pnpm
+RUN npm install -g pnpm acorn
 
 # Install yq (mikefarah version)
 RUN wget -q https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 \
