@@ -12,8 +12,8 @@
     - { "the_regexp": "KOGITO_RUNTIME_version=.*$", "the_replace": "KOGITO_RUNTIME_version={{ kogito_version }}" }
     - { "the_regexp": "SONATAFLOW_QUARKUS_DEVUI_VERSION=.*$", "the_replace": "SONATAFLOW_QUARKUS_DEVUI_VERSION={{ kogito_version }}" }
     - { "the_regexp": "SONATAFLOW_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion=.*$", "the_replace": "SONATAFLOW_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion={{ kogito_version }}" }
-    - { "the_regexp": "QUARKUS_PLATFORM_version=.*$", "the_replace": "QUARKUS_PLATFORM_version=${QUARKUS_PLATFORM_VERSION:{{ quarkus_platform_version }}}" }
-    - { "the_regexp": "QUARKUS_VERSION=.*$", "the_replace": "QUARKUS_VERSION=${QUARKUS_VERSION:{{ quarkus_version }}}" }
+    - { "the_regexp": "QUARKUS_PLATFORM_version=.*$", "the_replace": "QUARKUS_PLATFORM_version={{ quarkus_platform_version }}" }
+    - { "the_regexp": "QUARKUS_VERSION=.*$", "the_replace": "QUARKUS_VERSION={{ quarkus_version }}" }
     - { "the_regexp": "KOGITO_IMAGES_CEKIT_MODULES__quarkusGroupId=.*$", "the_replace": "KOGITO_IMAGES_CEKIT_MODULES__quarkusGroupId={{ quarkus_group_id }}" }
     - { "the_regexp": "KIE_TOOLS_BUILD__buildContainerImages=.*$", "the_replace": "KIE_TOOLS_BUILD__buildContainerImages={{ kie_tools_build__build_container_images }}" }
   loop_control:

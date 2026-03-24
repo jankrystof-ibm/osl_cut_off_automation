@@ -54,6 +54,14 @@
         yq_selector_path: '.env'
     }
 
+- name: Remove call to REMOVE_MODULES command
+  ansible.builtin.lineinfile:
+    path: "{{ cloning_target_dir }}/{{ file_path }}"
+    state: absent
+    regexp: '^\s*\$REMOVE_MODULES\s*$'
+  vars:
+    file_path: "kie-tools/.github/actions/setup-maven-cache/action.yml"
+
 - name: Commit - Updates github workflows and osl images
   include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
   vars:
