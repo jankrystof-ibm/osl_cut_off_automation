@@ -1,0 +1,19 @@
+- name: Update operator GO version
+  ansible.builtin.replace:
+    path: "{{ repository_location }}/{{ file_path }}"
+    regexp: '(?P<prefix>^\s*const\s*{{ item.variable_name }}\s*=\s*\").+(?P<suffix>\"\s*$)'
+    replace: '\g<prefix>{{ product_version }}\g<suffix>'
+  vars:
+    file_path: "packages/sonataflow-operator/api/version/version.go"
+  loop:
+    - { variable_name: "operatorVersion" }
+    - { variable_name: "platformTagVersion" }
+
+- name: Commit - Update operator GO version
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
+  vars:
+    repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+    commit_message: Update operator GO version
+  loop: "{{ kie_tool_repositories }}"
+  loop_control:
+    label: "{{ item.midstream }}"

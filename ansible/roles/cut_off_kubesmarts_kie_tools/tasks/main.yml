@@ -50,6 +50,11 @@
   vars:
     repository_location: "{{ cloning_target_dir }}/{{ kie_tool_repositories[0].midstream | basename }}"
 
+- name: Update operator GO version
+  include_tasks: update_operator_go_version.yml
+  vars:
+    repository_location: "{{ cloning_target_dir }}/{{ kie_tool_repositories[0].midstream | basename }}"
+
 - name: Push branches to remote
   include_tasks: "{{ playbook_dir }}/roles/common/tasks/push_repo.yml"
   vars:
