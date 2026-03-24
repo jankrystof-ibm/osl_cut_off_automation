@@ -6,49 +6,49 @@
   changed_when: "'Appending' in update_result.stdout"
   check_mode: no
   vars:
-    workflow_file: "{{ cloning_target_dir }}/{{ item.file_path }}"
+    workflow_file: "{{ repository_location }}/{{ item.file_path }}"
     selector: '{{ item.yq_selector_path }}'
     property: '{{ item.property }}'
     script_file: "{{ role_path }}/../common/files/yaml_update__ensure_key_and_vaue_exist.sh"
     key: "{{ item.key }}"
     value: "{{ item.value }}"
   loop:
-    - { file_path: "kie-tools/.github/workflows/osl_export_images.yml",
+    - { file_path: ".github/workflows/osl_export_images.yml",
         key: "with.ref",
         value: "{{ branch_name }}",
         yq_selector_path: '.jobs.export_dist.steps[] | select(.name=="Checkout Source Repository")'
     }
-    - { file_path: "kie-tools/.github/workflows/osl_export_images.yml",
+    - { file_path: ".github/workflows/osl_export_images.yml",
         key: "with.KOGITO_VERSION",
         value: "{{ kogito_version }}",
         yq_selector_path: '.jobs.export_dist.steps[] | select(.name=="Setup kie-tools repository")'
     }
-    - { file_path: "kie-tools/.github/workflows/osl_export_images.yml",
+    - { file_path: ".github/workflows/osl_export_images.yml",
         key: "env.BRANCH",
         value: "{{ branch_name }}",
         yq_selector_path: '.jobs.export_dist.steps[] | select(.name=="Create Pull Request")'
     }
-    - { file_path: "kie-tools/.github/actions/setup-maven-cache/action.yml",
+    - { file_path: ".github/actions/setup-maven-cache/action.yml",
         key: "default",
         value: "{{ branch_name }}",
         yq_selector_path: '.inputs.DEPS_BRANCHNAME'
     }
-    - { file_path: "kie-tools/.github/workflows/ci_build_midstream.yml",
+    - { file_path: ".github/workflows/ci_build_midstream.yml",
         key: "with.DEPS_BRANCHNAME",
         value: "{{ branch_name }}",
         yq_selector_path: '.jobs.build.steps[] | select(.name=="Setup local maven cache")'
     }
-    - { file_path: "kie-tools/.github/workflows/ci_build_midstream.yml",
+    - { file_path: ".github/workflows/ci_build_midstream.yml",
         key: "KOGITO_RUNTIME_version",
         value: "{{ kogito_version }}",
         yq_selector_path: '.env'
     }
-    - { file_path: "kie-tools/.github/workflows/ci_build.yml",
+    - { file_path: ".github/workflows/ci_build.yml",
         key: "with.DEPS_BRANCHNAME",
         value: "{{ branch_name }}",
         yq_selector_path: '.jobs.run.steps[] | select(.name=="Setup local maven cache")'
     }
-    - { file_path: "kie-tools/.github/workflows/ci_build.yml",
+    - { file_path: ".github/workflows/ci_build.yml",
         key: "KOGITO_RUNTIME_version",
         value: "{{ kogito_version }}",
         yq_selector_path: '.env'
@@ -60,7 +60,7 @@
     state: absent
     regexp: '^\s*\$REMOVE_MODULES\s*$'
   vars:
-    file_path: "kie-tools/.github/actions/setup-maven-cache/action.yml"
+    file_path: ".github/actions/setup-maven-cache/action.yml"
 
 - name: Commit - Updates github workflows and osl images
   include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"

@@ -34,7 +34,7 @@
       loop_control:
         label: "Repo: {{ item.repository | basename }} | Branch: {{ item.branch_name }}"
 
-    - name: Validace výsledků smazání (Robustní kontrola)
+    - name: Validate the removal
       ansible.builtin.fail:
         msg: "Removal failed {{ item.item.repository }}"
       loop: "{{ git_push_results.results }}"
