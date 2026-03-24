@@ -11,7 +11,7 @@ product_config_branch: "openshift-serverless-logic/{{ kogito_version }}" # e.g o
 product_config_branch_x: "openshift-serverless-logic/{{ kogito_version_short }}.x" # e.g openshift-serverless-logic/9.104.x
 quarkus_version: "3.27.2" # The quarkus version is clarified while CUT off starts. We should take the latest version available from RHBQ releases
 quarkus_platform_version: "3.27.2"
-quarkus_group_id: "com.redhat.quarkus.platform"
+quarkus_group_id: "io.quarkus.platform"
 
 cut_off_products:
   product_repositories:
