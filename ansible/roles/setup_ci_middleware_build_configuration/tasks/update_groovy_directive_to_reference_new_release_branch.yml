@@ -1,10 +1,17 @@
-- name: Update build configuration - groovy instruction to reference new build branch in nightly builds
+- name: Update build configuration - groovy instructions to be aligned with new release (branch, versions)
   ansible.builtin.replace:
     path: "{{ repository_location }}/{{ file_path }}"
-    regexp: '^(#!groovyScriptBase=https://gitlab\.cee\.redhat\.com/middleware/build-configurations/-/raw/)([^/]+)(/openshift-serverless-logic/nightly)$'
-    replace: '\1{{ branch_name }}\3'
+    regexp: "{{ item.the_regexp }}"
+    replace: "{{ item.the_replace }}"
+  loop:
+    - { the_regexp: '^(#!groovyScriptBase=https://gitlab\.cee\.redhat\.com/middleware/build-configurations/-/raw/)([^/]+)(/openshift-serverless-logic/nightly)$',
+        the_replace: '\g<1>{{ product_config_branch_name }}\g<3>' }
+    - { the_regexp: '^(#!imageTagVersion=)latest(\s*)$',
+        the_replace: '\g<1>{{ kogito_version_short }}\g<2>'}
+    - { the_regexp: '^(#!scmRevision=)main(\s*)$',
+        the_replace: '\g<1>{{ kogito_branch_name }}\g<2>'}
 
-- name: Commit - Update build configuration - groovy instruction to reference new build branch in nightly builds
+- name: Commit -  Update build configuration - groovy instructions to be aligned with new release (branch, versions)
   include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
   vars:
     repository_folder_location: "{{ repository_location }}"
