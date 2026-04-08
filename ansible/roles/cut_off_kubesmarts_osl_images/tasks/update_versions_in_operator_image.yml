@@ -1,0 +1,33 @@
+- name: Update versions in operator image - reference to HEAD of source code of sonataflow-operator
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/update_manifest_of_operator_image__sha1_of_kie_tools_head.yml"
+
+- name: Update versions in operator image - branch names for OSBS
+  ansible.builtin.command:
+    cmd: >
+      bash {{ script_file }} '{{ file_location }}' '{{ selector }}' {{ key }} '{{ value }}'
+  register: update_result
+  changed_when: "'Appending' in update_result.stdout"
+  check_mode: no
+  vars:
+    file_location: "{{ osl_images_repository_location }}/{{ item.file_path }}"
+    selector: "{{ item.yq_selector_path }}"
+    script_file: "{{ role_path }}/../common/files/yaml_update__ensure_key_and_vaue_exist.sh"
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop:
+    - { file_path: "osl-operator-image/logic-{{ rhel_platform }}-operator-image.yaml",
+        key: "branch",
+        value: "{{ osbs_repository_branch }}",
+        yq_selector_path: '.[] | select(.name == "openshift-serverless-1/logic-{{ rhel_platform }}-operator") | .osbs.repository'
+    }
+    - { file_path: "osl-cli-artifacts-image/logic-kn-workflow-cli-artifacts-{{ rhel_platform }}-image.yaml",
+        key: "branch",
+        value: "{{ osbs_repository_branch }}",
+        yq_selector_path: '.[] | select(.name == "openshift-serverless-1/logic-kn-workflow-cli-artifacts-{{ rhel_platform }}") | .osbs.repository'
+    }
+
+- name: Commit - Update versions in operator image - branch names for OSBS
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
+  vars:
+    repository_folder_location: "{{ osl_images_repository_location }}"
+    commit_message: "Update versions in operator image - branch names for OSBS"

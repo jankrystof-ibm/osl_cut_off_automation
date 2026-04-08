@@ -1,0 +1,35 @@
+- name: Determine SHA1 of the respective HEAD in the kie tools repository
+  ansible.builtin.shell:
+    git ls-remote {{ kie_tools_repository }} HEAD | awk '{print $1}'
+  register: kie_tools_repository_head_ref_result
+
+- ansible.builtin.set_fact:
+    # reference (i.e. commit) to source code of kubesmarts/kie-tools (update rhel operator image)
+    kie_tools_repository_head_ref: "{{ kie_tools_repository_head_ref_result.stdout | trim }}"
+
+- name: Update operator image - reference to HEAD of source code of sonataflow-operator
+  ansible.builtin.command:
+    cmd: >
+      bash {{ script_file }} '{{ file_location }}' '{{ selector }}' {{ key }} '{{ value }}'
+  register: update_result
+  changed_when: "'Appending' in update_result.stdout"
+  check_mode: no
+  vars:
+    file_location: "{{ osl_images_repository_location }}/{{ item.file_path }}"
+    selector: "{{ item.yq_selector_path }}"
+    property: '{{ item.property }}'
+    script_file: "{{ playbook_dir }}/roles/common/files/yaml_update__ensure_key_and_vaue_exist.sh"
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop:
+    - { file_path: "osl-operator-image/logic-{{ rhel_platform }}-operator-image.yaml",
+        key: "ref",
+        value: "{{ kie_tools_repository_head_ref }}",
+        yq_selector_path: '.[0].osbs.configuration.container.remote_source'
+    }
+
+- name: Commit - Update operator image - reference to HEAD of source code of sonataflow-operator
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
+  vars:
+    repository_folder_location: "{{ osl_images_repository_location }}"
+    commit_message: "Update operator image - reference to HEAD of source code of sonataflow-operator"

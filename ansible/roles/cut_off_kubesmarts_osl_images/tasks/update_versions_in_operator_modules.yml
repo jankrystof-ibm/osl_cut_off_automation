@@ -1,6 +1,6 @@
   - name: Find all yaml files except excluded directories
     ansible.builtin.find:
-      paths: "{{ repository_folder_location }}"
+      paths: "{{ osl_images_repository_location }}"
       patterns: "{{ file_name_pattern }}"
       recurse: yes
       excludes: "{{ excluded_dirs }}"
@@ -13,11 +13,11 @@
       replace: "{{ replacement }}"
     loop: "{{ yaml_files.files }}"
 
-  - name: Commit - Update image tags in OSL operator manifest
+  - name: Commit - Update versions in operator modules
     include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
     vars:
-      repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
-      commit_message: "Update image tags in OSL operator manifest"
+      repository_folder_location: "{{ osl_images_repository_location }}"
+      commit_message: "Update versions in operator modules"
     loop: "{{ osl_images_repositories }}"
     loop_control:
       label: "{{ item.midstream }}"

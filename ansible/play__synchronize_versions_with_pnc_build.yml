@@ -1,0 +1,83 @@
+---
+- name: OSL cut-off - supporting tasks - clone remote branches
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - "{{ vars_location | default('defaults.yml') }}"
+
+  vars:
+    sync_with_upstream_enabled: false
+    enable_push_to_remote: true
+    cloning_target_dir: "{{ playbook_dir }}/../OUT_osl_sync"
+    osl_images_repository: "{{ cut_off_kubesmarts_osl_images.osl_images_repositories }}"
+    osl_images_repository_folder_location: "{{ cloning_target_dir }}/{{ osl_images_repository[0].midstream | basename }}"
+    kie_tools_repository: "{{ cut_off_kubesmarts_kie_tools.kie_tool_repositories[0].midstream_https }}"
+    rhel_version: "{{ cut_off_kubesmarts_osl_images.rhel_version }}"
+    rhel_platform: "{{ cut_off_kubesmarts_osl_images.rhel_platform }}"
+  tasks:
+    - name: Ensure needed variables are defined
+      ansible.builtin.fail:
+        msg: "Variable {{ required_var }} is needed but not defined"
+      loop:
+        - kogito_redhat_version # e.g. 9.105.0.redhat-00002
+        - product_version # e.g. 1.38.0-CR1
+      loop_control:
+        loop_var: required_var
+      when: vars[required_var] is not defined
+
+    - name: Synchronize branches, sync optionally and create new release branches
+      include_tasks: "{{ playbook_dir }}/roles/common/tasks/clone_repositories_sync_optionally_and_checkout_release_branch.yml"
+      vars:
+        repositories: "{{ osl_images_repository }}"
+        base_branch: "9.105.x-prod"
+        branch_name: "{{ product_version }}__synchronize_osl_images_product_branch_with_latest_pnc_build"
+
+    - name: Update versions of cekit modules
+      ansible.builtin.command:
+        cmd: >
+          bash {{ script_file }} '{{ file_location }}' '{{ selector }}' {{ key }} '{{ value }}'
+      register: update_result
+      changed_when: "'Appending' in update_result.stdout"
+      check_mode: no
+      vars:
+        file_location: "{{ osl_images_repository_folder_location }}/{{ file_path }}"
+        selector: "{{ item.yq_selector_path }}"
+        property: '{{ item.property }}'
+        script_file: "{{ playbook_dir }}/roles/common/files/yaml_update__ensure_key_and_vaue_exist.sh"
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+        file_path: "images-dist/modules/kogito-project-versions/module.yaml"
+      loop:
+        - { key: "value",
+            value: "{{ kogito_redhat_version }}",
+            yq_selector_path: '.envs[] | select(.name=="KOGITO_VERSION")' }
+        - { key: "value",
+            value: "{{ kogito_redhat_version }}",
+            yq_selector_path: '.envs[] | select(.name=="SONATAFLOW_QUARKUS_DEVUI_VERSION")' }
+
+    - name: Update versions of cekit images
+      ansible.builtin.command:
+        cmd: >
+          bash {{ script_file }} '{{ file_location }}' '{{ selector }}' {{ key }} '{{ value }}'
+      register: update_result
+      changed_when: "'Appending' in update_result.stdout"
+      check_mode: no
+      vars:
+        file_location: "{{ osl_images_repository_folder_location }}/{{ item.file_path }}"
+        script_file: "{{ playbook_dir }}/roles/common/files/yaml_update__ensure_key_and_vaue_exist.sh"
+        selector: '.labels[] | select(.name=="org.kie.kogito.version")'
+        key: "value"
+        value: "{{ kogito_redhat_version }}"
+      loop:
+        - { file_path: "images-dist/logic-data-index-ephemeral-rhel9-image.yaml" }
+        - { file_path: "images-dist/logic-data-index-postgresql-rhel9-image.yaml" }
+        - { file_path: "images-dist/logic-db-migrator-tool-rhel9-image.yaml" }
+        - { file_path: "images-dist/logic-jobs-service-ephemeral-rhel9-image.yaml" }
+        - { file_path: "images-dist/logic-jobs-service-postgresql-rhel9-image.yaml" }
+        - { file_path: "images-dist/logic-management-console-rhel9-image.yaml" }
+        - { file_path: "images-dist/logic-swf-builder-rhel9-image.yaml" }
+        - { file_path: "images-dist/logic-swf-devmode-rhel9-image.yaml" }
+
+    - name: Update operator image - reference to HEAD of source code of sonataflow-operator
+      include_tasks: "{{ playbook_dir }}/roles/common/tasks/update_manifest_of_operator_image__sha1_of_kie_tools_head.yml"

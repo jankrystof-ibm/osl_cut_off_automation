@@ -6,9 +6,8 @@
   changed_when: "'Appending' in update_result.stdout"
   check_mode: no
   vars:
-    file_location: "{{ repository_folder_location }}/{{ file_path }}"
+    file_location: "{{ osl_images_repository_location }}/{{ file_path }}"
     selector: "{{ item.yq_selector_path }}"
-    property: '{{ item.property }}'
     script_file: "{{ role_path }}/../common/files/yaml_update__ensure_key_and_vaue_exist.sh"
     key: "{{ item.key }}"
     value: "{{ item.value }}"
@@ -34,8 +33,5 @@
 - name: Commit - update_kogito_project_versions
   include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
   vars:
-    repository_folder_location: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+    repository_folder_location: "{{ osl_images_repository_location }}"
     commit_message: "Update kogito project versions"
-  loop: "{{ osl_images_repositories }}"
-  loop_control:
-    label: "{{ item.midstream }}"

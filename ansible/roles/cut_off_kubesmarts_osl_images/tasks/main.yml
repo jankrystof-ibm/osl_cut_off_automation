@@ -8,25 +8,25 @@
   vars:
     repositories: "{{ osl_images_repositories }}"
 
-- name: Update image tags in OSL operator manifest
-  include_tasks: update_image_tags_in_osl_operator_manifest.yml
+- name: Update versions in operator modules
+  include_tasks: update_versions_in_operator_modules.yml
   vars:
-    repository_folder_location: "{{ cloning_target_dir}}/{{ osl_images_repositories[0].midstream | basename }}"
+    osl_images_repository_location: "{{ cloning_target_dir}}/{{ osl_images_repositories[0].midstream | basename }}"
     file_name_pattern: "*.yaml"
     to_find: '999.0.0.main'
     replacement: "{{ osl_image_tag }}"
     excluded_dirs:
       - images-dist
 
-- name: Update manifests - 1) branch names for OSBS and 2) reference to source code of kubesmarts/kie-tools
-  include_tasks: update_manifests.yml
+- name: Update versions in operator image
+  include_tasks: update_versions_in_operator_image.yml
   vars:
-    repository_folder_location: "{{ cloning_target_dir}}/{{ osl_images_repositories[0].midstream | basename }}"
+    osl_images_repository_location: "{{ cloning_target_dir}}/{{ osl_images_repositories[0].midstream | basename }}"
 
 - name: Update kogito project versions
   include_tasks: update_kogito_project_versions.yml
   vars:
-    repository_folder_location: "{{ cloning_target_dir}}/{{ osl_images_repositories[0].midstream | basename }}"
+    osl_images_repository_location: "{{ cloning_target_dir}}/{{ osl_images_repositories[0].midstream | basename }}"
 
 - name: Push branches to remote
   include_tasks: "{{ playbook_dir }}/roles/common/tasks/push_repo.yml"
