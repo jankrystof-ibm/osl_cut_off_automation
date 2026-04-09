@@ -1,0 +1,33 @@
+- name: Update quarkus versions in kogito-project-versions/module.yaml
+  ansible.builtin.command:
+    cmd: >
+      bash {{ script_file }} '{{ file_location }}' '{{ selector }}' {{ key }} '{{ value }}'
+  register: update_result
+  changed_when: "'Appending' in update_result.stdout"
+  check_mode: no
+  vars:
+    file_location: "{{ osl_images_repository_location }}/{{ file_path }}"
+    selector: "{{ item.yq_selector_path }}"
+    script_file: "{{ role_path }}/../common/files/yaml_update__ensure_key_and_vaue_exist.sh"
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    file_path: "images-dist/modules/kogito-project-versions/module.yaml"
+  loop:
+    - { key: "value",
+        value: "{{ quarkus_group_id }}xxx",
+        yq_selector_path: '.envs[] | select(.name=="QUARKUS_PLATFORM_GROUPID")'
+    }
+    - { key: "value",
+        value: "{{ quarkus_platform_version }}xxx",
+        yq_selector_path: '.envs[] | select(.name=="QUARKUS_PLATFORM_VERSION")'
+    }
+    - { key: "value",
+        value: "{{ quarkus_version }}xxx",
+        yq_selector_path: '.envs[] | select(.name=="QUARKUS_VERSION")'
+    }
+
+- name: Commit - Update quarkus versions in kogito-project-versions/module.yaml
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
+  vars:
+    repository_folder_location: "{{ osl_images_repository_location }}"
+    commit_message: "Update Quarkus versions in kogito-project-versions/module.yaml"

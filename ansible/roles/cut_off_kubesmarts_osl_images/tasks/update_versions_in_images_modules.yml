@@ -1,0 +1,29 @@
+- name: Find and collect image modules
+  ansible.builtin.find:
+    paths: "{{ osl_images_repository_location }}/images-dist/modules"
+    patterns: "module.yaml"
+    recurse: yes
+  register: found_modules
+
+
+- name: Update versions in image modules
+  ansible.builtin.command:
+    cmd: >
+      bash {{ script_file }} '{{ file_location }}' '{{ selector }}' {{ key }} '{{ value }}'
+  register: update_result
+  changed_when: "'Appending' in update_result.stdout"
+  check_mode: no
+  vars:
+    file_location: "{{ file_path }}"
+    selector: "-"
+    script_file: "{{ role_path }}/../common/files/yaml_update__ensure_key_and_vaue_exist.sh"
+    key: "version"
+    value: "{{ product_version }}"
+    file_path: "{{ item.path }}"
+  loop: "{{ found_modules.files }}"
+
+- name: Commit - Update versions in image modules
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
+  vars:
+    repository_folder_location: "{{ osl_images_repository_location }}"
+    commit_message: "Update versions in image modules"
