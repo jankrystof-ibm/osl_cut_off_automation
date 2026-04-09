@@ -6,7 +6,7 @@
       excludes: "{{ excluded_dirs }}"
     register: yaml_files
 
-  - name: Replace version string in yaml files
+  - name: Update product versions in osl images
     ansible.builtin.replace:
       path: "{{ item.path }}"
       regexp: "{{ to_find }}"
@@ -17,7 +17,7 @@
     include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
     vars:
       repository_folder_location: "{{ osl_images_repository_location }}"
-      commit_message: "Update versions in operator modules"
+      commit_message: "Update product versions in osl images"
     loop: "{{ osl_images_repositories }}"
     loop_control:
       label: "{{ item.midstream }}"

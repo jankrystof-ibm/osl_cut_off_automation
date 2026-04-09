@@ -8,8 +8,8 @@
   vars:
     repositories: "{{ osl_images_repositories }}"
 
-- name: Update versions in operator modules
-  include_tasks: update_versions_in_operator_modules.yml
+- name: Update versions in osl images
+  include_tasks: update_product_versions_in_osl_images.yml
   vars:
     osl_images_repository_location: "{{ cloning_target_dir}}/{{ osl_images_repositories[0].midstream | basename }}"
     file_name_pattern: "*.yaml"
@@ -18,13 +18,24 @@
     excluded_dirs:
       - images-dist
 
-- name: Update versions in operator image
-  include_tasks: update_versions_in_operator_image.yml
+- name: Update branch names in operator image
+  include_tasks: update_branch_names_in_operator_image.yml
   vars:
     osl_images_repository_location: "{{ cloning_target_dir}}/{{ osl_images_repositories[0].midstream | basename }}"
 
-- name: Update kogito project versions
-  include_tasks: update_kogito_project_versions.yml
+- name: Update versions in images
+  include_tasks: update_versions_in_images.yml
+  vars:
+    osl_images_repository_location: "{{ cloning_target_dir}}/{{ osl_images_repositories[0].midstream | basename }}"
+
+- name: Update versions in images modules
+  include_tasks: update_versions_in_images_modules.yml
+  vars:
+    osl_images_repository_location: "{{ cloning_target_dir}}/{{ osl_images_repositories[0].midstream | basename }}"
+
+
+- name: Update quarkus versions
+  include_tasks: update_quarkus_versions.yml
   vars:
     osl_images_repository_location: "{{ cloning_target_dir}}/{{ osl_images_repositories[0].midstream | basename }}"
 

@@ -18,6 +18,7 @@
   include_tasks: update_index_js_files_with_new_version.yml
   vars:
     repository_location: "{{ cloning_target_dir }}/{{ kie_tool_repositories[0].midstream | basename }}"
+    file_path: "packages/root-env/env/index.js"
 
 - name: Update versions in environment variables
   include_tasks: update_environment_variables_with_new_version.yml
@@ -45,7 +46,7 @@
   vars:
     repository_location: "{{ cloning_target_dir }}/{{ kie_tool_repositories[0].midstream | basename }}"
 
-- name: Remove maven profile reproducible-build
+- name: Update Maven build options
   include_tasks: update_maven_build_options.yml
   vars:
     repository_location: "{{ cloning_target_dir }}/{{ kie_tool_repositories[0].midstream | basename }}"

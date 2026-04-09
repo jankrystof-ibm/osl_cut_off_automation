@@ -1,4 +1,3 @@
-# Remove maven profile reproducible-build
 - name: Remove maven profile reproducible-build from pom.xml
   ansible.builtin.xml:
     path: "{{ repository_location }}/{{ file_path }}"

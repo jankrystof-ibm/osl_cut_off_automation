@@ -10,8 +10,8 @@
     sync_with_upstream_enabled: false
     enable_push_to_remote: true
     cloning_target_dir: "{{ playbook_dir }}/../OUT_osl_sync"
-    osl_images_repository: "{{ cut_off_kubesmarts_osl_images.osl_images_repositories }}"
-    osl_images_repository_folder_location: "{{ cloning_target_dir }}/{{ osl_images_repository[0].midstream | basename }}"
+    osl_images_repositories: "{{ cut_off_kubesmarts_osl_images.osl_images_repositories }}"
+    osl_images_repository_folder_location: "{{ cloning_target_dir }}/{{ osl_images_repositories[0].midstream | basename }}"
     kie_tools_repository: "{{ cut_off_kubesmarts_kie_tools.kie_tool_repositories[0].midstream_https }}"
     rhel_version: "{{ cut_off_kubesmarts_osl_images.rhel_version }}"
     rhel_platform: "{{ cut_off_kubesmarts_osl_images.rhel_platform }}"
@@ -29,11 +29,11 @@
     - name: Synchronize branches, sync optionally and create new release branches
       include_tasks: "{{ playbook_dir }}/roles/common/tasks/clone_repositories_sync_optionally_and_checkout_release_branch.yml"
       vars:
-        repositories: "{{ osl_images_repository }}"
+        repositories: "{{ osl_images_repositories }}"
         base_branch: "9.105.x-prod"
         branch_name: "{{ product_version }}__synchronize_osl_images_product_branch_with_latest_pnc_build"
 
-    - name: Update versions of cekit modules
+    - name: Update versions of operator modules
       ansible.builtin.command:
         cmd: >
           bash {{ script_file }} '{{ file_location }}' '{{ selector }}' {{ key }} '{{ value }}'
@@ -56,7 +56,7 @@
             value: "{{ kogito_redhat_version }}",
             yq_selector_path: '.envs[] | select(.name=="SONATAFLOW_QUARKUS_DEVUI_VERSION")' }
 
-    - name: Update versions of cekit images
+    - name: Update versions of operator images
       ansible.builtin.command:
         cmd: >
           bash {{ script_file }} '{{ file_location }}' '{{ selector }}' {{ key }} '{{ value }}'
@@ -79,5 +79,21 @@
         - { file_path: "images-dist/logic-swf-builder-rhel9-image.yaml" }
         - { file_path: "images-dist/logic-swf-devmode-rhel9-image.yaml" }
 
+    - name: Commit - Update versions of operator image and its modules
+      include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
+      vars:
+        repository_folder_location: "{{ osl_images_repository_folder_location }}"
+        commit_message: "Update versions of operator image and its modules"
+
     - name: Update operator image - reference to HEAD of source code of sonataflow-operator
       include_tasks: "{{ playbook_dir }}/roles/common/tasks/update_manifest_of_operator_image__sha1_of_kie_tools_head.yml"
+      vars:
+        osl_images_repository_location: "{{ osl_images_repository_folder_location }}"
+
+    - name: Push branches to remote
+      include_tasks: "{{ playbook_dir }}/roles/common/tasks/push_repo.yml"
+      vars:
+        repository_folder_location:  "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
+      loop: "{{ osl_images_repositories }}"
+      loop_control:
+        label: "{{ item.midstream }}"

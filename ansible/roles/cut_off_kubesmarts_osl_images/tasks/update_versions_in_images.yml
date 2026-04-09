@@ -1,0 +1,34 @@
+- name: Find and collect images
+  ansible.builtin.shell: |
+    find {{ location }} -name "{{ file_name_pattern }}" -type f -print0 | \
+    xargs -0 -I {} sh -c 'yq ".labels[] | select(.name==\"{{ key }}\")" "{}" | grep -q . && echo "{}"'
+  register: found_image_files
+  changed_when: false
+  failed_when: false
+  vars:
+    location: "{{ osl_images_repository_location }}/images-dist"
+    file_name_pattern: "*.yaml"
+    key: "org.kie.kogito.version"
+
+- name: Update versions in images
+  ansible.builtin.command:
+    cmd: >
+      bash {{ script_file }} '{{ file_location }}' '{{ selector }}' {{ key }} '{{ value }}'
+  register: update_result
+  changed_when: "'Appending' in update_result.stdout"
+  check_mode: no
+  vars:
+    file_location: "{{ file_path }}"
+    selector: '.labels[] | select(.name=="org.kie.kogito.version")'
+    script_file: "{{ role_path }}/../common/files/yaml_update__ensure_key_and_vaue_exist.sh"
+    key: "value"
+    value: "{{ kogito_version }}"
+    file_path: "{{ item }}"
+  loop: "{{ found_image_files.stdout_lines }}"
+
+
+- name: Commit - Update versions in images
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
+  vars:
+    repository_folder_location: "{{ osl_images_repository_location }}"
+    commit_message: "Update versions in images"

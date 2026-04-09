@@ -1,6 +1,3 @@
-- ansible.builtin.set_fact:
-    file_path: "packages/root-env/env/index.js"
-
 - name: Update index.js files OSL__branchName (3.a) + KIE_TOOLS_BUILD__streamName (3.b) + KOGITO_RUNTIME_version (3.c) + QUARKUS_PLATFORM
   ansible.builtin.replace:
     path: "{{ repository_location }}/{{ file_path }}"
