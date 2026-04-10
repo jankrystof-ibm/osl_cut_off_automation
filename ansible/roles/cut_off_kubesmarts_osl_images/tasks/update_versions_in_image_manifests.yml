@@ -1,0 +1,23 @@
+- name: Update versions in image manifests
+  ansible.builtin.command:
+    cmd: >
+      bash {{ script_file }} '{{ file_location }}' '{{ selector }}' {{ key }} '{{ value }}'
+  register: update_result
+  changed_when: "'Appending' in update_result.stdout"
+  check_mode: no
+  vars:
+    file_location: "{{ osl_images_repository_location }}/{{ file_path }}"
+    selector: '.spec'
+    script_file: "{{ role_path }}/../common/files/yaml_update__ensure_key_and_vaue_exist.sh"
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    file_path: "images-dist/modules/com.redhat.osl.bundleinstall/bundle/manifests/logic-operator.clusterserviceversion.yaml"
+  loop:
+    - { key: "version", value: "{{ product_version_target }}" }
+    - { key: "replaces", value: "{{ product_version_latest }}" }
+
+- name: Commit - Update versions in image manifests
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/commit_changes_if_any.yml"
+  vars:
+    repository_folder_location: "{{ osl_images_repository_location }}"
+    commit_message: "Update versions in image manifests"

@@ -31,7 +31,7 @@
       vars:
         repositories: "{{ osl_images_repositories }}"
         base_branch: "9.105.x-prod"
-        branch_name: "{{ product_version }}__synchronize_osl_images_product_branch_with_latest_pnc_build"
+        branch_name: "{{ product_version_target }}__synchronize_osl_images_product_branch_with_latest_pnc_build"
 
     - name: Update versions of operator modules
       ansible.builtin.command:

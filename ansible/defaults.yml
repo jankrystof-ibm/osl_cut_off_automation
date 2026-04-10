@@ -2,8 +2,9 @@
 
 
 snapshot_version: "999-SNAPSHOT"
-product_version: "1.38.0"
-product_version_short: "1.38"
+product_version_target_short: "1.38"
+product_version_target: "{{ product_version_target_short }}.0" # e.g. 1.38.0
+product_version_latest: "1.37.2"
 kogito_version_short: "9.105"
 kogito_version: "{{ kogito_version_short }}.0" # e.g. 9.104.0
 branch_name: "{{ kogito_version_short }}.x-prod"
@@ -28,8 +29,8 @@ cut_off_kubesmarts_kie_tools:
 cut_off_kubesmarts_osl_images:
   rhel_version: 9
   rhel_platform: "rhel9"
-  osbs_repository_branch: "openshift-serverless-1.38-rhel-9" # e.g. openshift-serverless-1.37-rhel-9
-  osl_image_tag: "{{ product_version_short }}" # the `osl_image_tag` will replace occurrences of 999.0.0.main
+  osbs_repository_branch: "openshift-serverless-{{ product_version_target_short }}-rhel-9" # e.g. openshift-serverless-1.37-rhel-9
+  osl_image_tag: "{{ product_version_target_short }}" # the `osl_image_tag` will replace occurrences of 999.0.0.main
   osl_images_repositories:
     - { midstream: "git@github.com:kubesmarts/osl-images" }
 

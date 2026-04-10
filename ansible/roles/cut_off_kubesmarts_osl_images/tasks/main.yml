@@ -39,6 +39,11 @@
   vars:
     osl_images_repository_location: "{{ cloning_target_dir}}/{{ osl_images_repositories[0].midstream | basename }}"
 
+- name: Update versions in image manifests
+  include_tasks: update_versions_in_image_manifests.yml
+  vars:
+    osl_images_repository_location: "{{ cloning_target_dir }}/{{ osl_images_repositories[0].midstream | basename }}"
+
 - name: Push branches to remote
   include_tasks: "{{ playbook_dir }}/roles/common/tasks/push_repo.yml"
   vars:

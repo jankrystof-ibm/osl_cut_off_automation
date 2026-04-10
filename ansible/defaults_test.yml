@@ -27,7 +27,7 @@ cut_off_kubesmarts_osl_images:
   rhel_version: 9
   rhel_platform: "rhel9"
   osbs_repository_branch: "openshift-serverless-0.38-rhel-9" # e.g. openshift-serverless-1.37-rhel-9
-  osl_image_tag: "{{ product_version_short }}" # the `osl_image_tag` will replace occurrences of 999.0.0.main
+  osl_image_tag: "{{ product_version_target_short }}" # the `osl_image_tag` will replace occurrences of 999.0.0.main
   osl_images_repositories:
     - { midstream: "git@github.com:kubesmarts/osl-images" }
 

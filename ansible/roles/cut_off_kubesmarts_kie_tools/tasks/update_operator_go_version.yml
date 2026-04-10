@@ -2,7 +2,7 @@
   ansible.builtin.replace:
     path: "{{ repository_location }}/{{ file_path }}"
     regexp: '(?P<prefix>^\s*const\s*{{ item.variable_name }}\s*=\s*\").+(?P<suffix>\"\s*$)'
-    replace: '\g<prefix>{{ product_version }}\g<suffix>'
+    replace: '\g<prefix>{{ product_version_target }}\g<suffix>'
   vars:
     file_path: "packages/sonataflow-operator/api/version/version.go"
   loop:

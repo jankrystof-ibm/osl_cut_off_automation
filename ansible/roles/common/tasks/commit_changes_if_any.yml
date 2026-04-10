@@ -27,6 +27,6 @@
 ## Step 2 — Commit Only If Needed
 - name: Commit changes
   ansible.builtin.command:
-    cmd: git commit -am "{{ commit_message }} ({{ product_version }})"
+    cmd: git commit -am "{{ commit_message }} ({{ product_version_target }})"
     chdir: "{{ repository_folder_location }}"
   when: git_porcelain_status.stdout != ""

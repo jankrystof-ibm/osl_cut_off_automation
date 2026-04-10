@@ -7,8 +7,8 @@
     file_path: ".github/supporting-files/ci/osl/.env"
   loop:
     - { "the_regexp": "JAVA_RUNTIME_VERSION=.*$", "the_replace": "JAVA_RUNTIME_VERSION={{ kogito_version }}" }
-    - { "the_regexp": "OSL__branchName=.*$", "the_replace": "OSL__branchName={{ product_version_short }}" }
-    - { "the_regexp": "KIE_TOOLS_BUILD__streamName=.*$", "the_replace": "KIE_TOOLS_BUILD__streamName={{ product_version }}" }
+    - { "the_regexp": "OSL__branchName=.*$", "the_replace": "OSL__branchName={{ product_version_target_short }}" }
+    - { "the_regexp": "KIE_TOOLS_BUILD__streamName=.*$", "the_replace": "KIE_TOOLS_BUILD__streamName={{ product_version_target }}" }
     - { "the_regexp": "KOGITO_RUNTIME_version=.*$", "the_replace": "KOGITO_RUNTIME_version={{ kogito_version }}" }
     - { "the_regexp": "SONATAFLOW_QUARKUS_DEVUI_VERSION=.*$", "the_replace": "SONATAFLOW_QUARKUS_DEVUI_VERSION={{ kogito_version }}" }
     - { "the_regexp": "SONATAFLOW_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion=.*$", "the_replace": "SONATAFLOW_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion={{ kogito_version }}" }

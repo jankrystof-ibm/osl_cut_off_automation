@@ -2,12 +2,12 @@
   ansible.builtin.command:
     cmd: >
       node scripts/update-kogito-version/update_kogito_version.js
-      --maven  {{ product_version }}
+      --maven  {{ product_version_target }}
       --droolsGitRef {{ branch_name }}
       --optaplannerGitRef {{ branch_name }}
       --kogitoRuntimesGitRef {{ branch_name }}
       --kogitoAppsGitRef {{ branch_name }}
-      {{ product_version }}
+      {{ product_version_target }}
     chdir: "{{ cloning_target_dir }}/{{ item.midstream | basename }}"
   loop: "{{ kie_tool_repositories }}"
   loop_control:

@@ -4,7 +4,7 @@
     regexp: '^(def {{ item.name }}\s*=\s*)(["''])([^"'']*)(\2)'
     replace: '\g<1>\g<2>{{ item.value }}\g<2>'
   loop:
-    - { name: "SERVERLESS_LOGIC_CURRENT_PRODUCT_VERSION", value: "{{ product_version }}" }
+    - { name: "SERVERLESS_LOGIC_CURRENT_PRODUCT_VERSION", value: "{{ product_version_target }}" }
     - { name: "SERVERLESS_LOGIC_KOGITO_CURRENT_PRODUCT_VERSION", value: "{{ kogito_version }}" }
     - { name: "SERVERLESS_LOGIC_DROOLS_CURRENT_PRODUCT_VERSION", value: "{{ kogito_version }}" }
     - { name: "SERVERLESS_LOGIC_CURRENT_PRODUCT_BRANCH", value: "{{ branch_name }}" }

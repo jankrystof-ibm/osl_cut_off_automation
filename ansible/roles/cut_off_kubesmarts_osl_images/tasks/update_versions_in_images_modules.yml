@@ -18,7 +18,7 @@
     selector: "-"
     script_file: "{{ role_path }}/../common/files/yaml_update__ensure_key_and_vaue_exist.sh"
     key: "version"
-    value: "{{ product_version }}"
+    value: "{{ product_version_target }}"
     file_path: "{{ item.path }}"
   loop: "{{ found_modules.files }}"
 

@@ -1,6 +1,6 @@
 - name: Update version in package.json files
   ansible.builtin.command:
-    cmd: "node scripts/update-version/update_version.js {{ product_version }}"
+    cmd: "node scripts/update-version/update_version.js {{ product_version_target }}"
     chdir: "{{ cloning_target_dir }}/{{ kie_tool_repository.midstream | basename }}"
   vars:
     kie_tool_repository: "{{ kie_tool_repositories[0] }}"
